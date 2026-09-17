@@ -61,3 +61,43 @@ not be detected until it restarts.
 Once installed, `/init-mwp` is the entry point — it asks what the new project
 is for and routes to the right scaffolding skill. `/audit-mwp` and
 `/mwp-health` work against any existing project, MWP or not.
+
+---
+
+## If your agent isn't Claude Code
+
+Steps 1–4 above are Claude Code's own convention (`~/.claude/skills/`,
+`~/.claude/mwp-spec/`) — a different tool won't read from those paths and
+won't have an equivalent auto-triggering skill format. You don't need
+Claude Code to use this repo, but you do need your agent to do a translation
+step instead of a file-copy step:
+
+1. **Don't copy files into `~/.claude/`.** Leave this cloned repo where it
+   is, or copy just `mwp-spec/` somewhere stable inside your own project
+   (e.g. `docs/mwp-spec/`) — pick one location and keep it fixed.
+
+2. **For each skill you want** (`skills/mwp/<name>/SKILL.md` +
+   `GUIDE.md`), read both files and translate them into your tool's own
+   instruction format — a Cursor `.cursor/rules/<name>.mdc`, a Windsurf
+   `.windsurfrules` entry, a `.github/copilot-instructions.md` section,
+   an Aider convention file, or whatever your tool actually reads.
+   Preserve, at minimum:
+   - the frontmatter `description:` — it's the trigger condition (when
+     this should activate)
+   - the precondition line about confirming the spec is readable
+   - the numbered steps in order
+   - any reference to `~/.claude/mwp-spec/...` — rewrite every one of
+     these to wherever you actually put `mwp-spec/` in step 1. This is
+     the one thing most likely to silently break in translation: a
+     skill that still points at `~/.claude/mwp-spec/spec/CONTEXT.md`
+     after being moved into a Cursor rule will fail the precondition
+     check (correctly) rather than reading the wrong file — if that
+     happens, look for a missed path rewrite before assuming the spec
+     didn't install.
+
+3. **No auto-triggering?** Some tools don't support conditional
+   activation the way Claude Code skills do. In that case, just tell
+   your agent directly: "read `skills/mwp/init-mwp/SKILL.md` in this
+   repo and follow it" — the file works as a plain instruction set with
+   zero translation needed, you just lose the automatic "this fires when
+   I say X" behaviour.
