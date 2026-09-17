@@ -1,0 +1,26 @@
+<!--
+GEMINI.md — cross-model adapter.
+
+This template is deliberately a directive, not a body. `spec/file-set.md` requires
+GEMINI.md to carry the SAME CONTENT as AGENTS.md; shipping a second copy of that
+prose here would create exactly the divergence the framework exists to prevent
+(one definition, cited not copied).
+
+TO GENERATE:
+  Write GEMINI.md with content identical to the AGENTS.md you generated for this
+  project from AGENTS.md.template. Same text, same project-specific substitutions.
+
+  Both files are UPPERCASE. Never create lowercase agents.md or gemini.md — on
+  Windows and default macOS they collide with the uppercase file
+  (spec/file-set.md, "Casing is not cosmetic").
+
+  If the project is a PUBLIC repo whose DEVLOG.md and memory.md are relocated to a
+  private hub, that relocation notice must appear in GEMINI.md too — an agent
+  reading GEMINI.md first is the documented reason this file exists, and a notice
+  stated only in CLAUDE.md leaves it reading stale content with no pointer.
+
+TO VERIFY:
+  diff AGENTS.md GEMINI.md   # must be empty
+
+Strip this comment from the generated output.
+-->

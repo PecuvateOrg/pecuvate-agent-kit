@@ -1,0 +1,46 @@
+# [PROJECT NAME]
+<!-- Identity: one to two lines. What this project is and what it does. -->
+
+[One sentence description of what this project is and does.]
+
+This file is the map. Workspace detail lives in each CONTEXT.md.
+<!-- Self-Reference: tells Claude this file routes and constrains — detail lives elsewhere. -->
+
+## Routing
+<!-- Routing Table: every task type mapped to a workspace, context file, and tools.
+     Each row must be a genuinely distinct task type. Keep rows that point to the
+     same workspace merged if the task types are similar. -->
+| Task | Go to | Read | Skills |
+|---|---|---|---|
+| [Task type] | [workspace/] | CONTEXT.md | — |
+
+## Cross-Workspace Flows
+<!-- Cross-Workspace Flows: tasks that move through multiple workspaces in sequence.
+     Only include if such flows exist. Remove this section if not needed. -->
+- [Flow name]: [workspace A] → [workspace B] → [workspace C]
+
+## Naming Conventions
+<!-- ID & Naming: project-wide only. Workspace-specific conventions go in CONTEXT.md. -->
+- [File type]: [naming pattern]
+
+## File Placement
+<!-- File Placement Rules: one rule per file type. Prevents structural drift as the project grows. -->
+- [File type] → [folder/]
+
+## Token Management
+<!-- Token Management: explicit do-not-load rules. This is negative routing — tells Claude
+     what to skip. Without this, Claude defaults to reading everything in scope. -->
+- Do not load [folder/] unless [condition]
+- Do not load reference files unless the task involves [integration/concern]
+
+## Deployment
+<!-- Deployment: required before deploying. Domain must be a real value — not a placeholder. -->
+- Platform: Netlify
+- Domain: <!-- e.g. app.example.com -->
+- Branch: main
+- Base directory: src/
+
+## Skills and Tools
+<!-- Skills and Tools: list what MCPs, skills, and slash commands are available.
+     Prevents Claude from attempting tasks without the right tools. -->
+- /[skill-name] — [what it does]

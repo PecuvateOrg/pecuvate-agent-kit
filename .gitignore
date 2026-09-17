@@ -1,0 +1,11 @@
+# OS and editor noise
+.DS_Store
+Thumbs.db
+*.swp
+
+# Dependencies — just in case a future skill family in this repo ships example code
+node_modules/
+
+# This is a public repo — operational/internal docs never live here, see the workspace's own workspace-docs/ convention
+DEVLOG.md
+memory.md

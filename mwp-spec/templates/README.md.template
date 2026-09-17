@@ -1,0 +1,26 @@
+# [Project Name]
+
+[One or two sentences: what this project is and what it does.]
+
+## Setup
+
+```
+[install command]
+[dev command]
+```
+
+## Environment Variables
+
+| Variable | Purpose |
+|---|---|
+| [VAR_NAME] | [what it's for] |
+
+Copy `.env.example` to `.env.local` and fill in values before running locally.
+
+## Deployment
+
+- Platform: [Netlify / other]
+- Branch: main
+- Domain: [domain, or "not yet assigned"]
+
+See `CLAUDE.md` and `ops/CONTEXT.md` (or equivalent) for full deployment detail.

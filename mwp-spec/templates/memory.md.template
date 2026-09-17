@@ -1,0 +1,27 @@
+# Memory — [Project Name]
+
+<!-- For an explicitly adopted shared-memory project, use spec/session-memory.md:
+     add authority/as_of, named Recall Links and Pending Captures; link durable
+     decisions instead of duplicating them. Declare destinations in Layer 0 first.
+     This template does not opt projects in automatically. -->
+
+## Current Status
+<!-- What phase is the project in, and what is complete vs outstanding. -->
+- Phase: [current phase]
+- Complete: [what is done]
+- Outstanding: [what remains]
+
+## Key Decisions
+<!-- Decisions made that are not documented elsewhere and would need re-explaining
+     at the start of every session. Keep entries short. -->
+- [Decision]: [brief rationale]
+
+## Preferences
+<!-- How the user works on this project — what to avoid, what has been confirmed. -->
+- [Preference or working style note]
+
+## Pre-Close Checklist
+<!-- Session discipline — run this before ending every session. -->
+- [ ] Update Current Status to reflect what changed this session
+- [ ] Record any new decisions in Key Decisions
+- [ ] Note any outstanding work that was not completed

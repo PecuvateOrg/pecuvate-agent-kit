@@ -1,0 +1,23 @@
+# [Workspace Name]
+<!-- One sentence: what this workspace is for. -->
+
+[What this workspace does — one sentence.]
+
+## Process
+<!-- What happens here, in order. Keep steps concrete and sequential. -->
+1. [Step one]
+2. [Step two]
+3. [Step three]
+
+## Inputs and Outputs
+<!-- What comes in to this workspace and what leaves it. -->
+- In: [what arrives here from other workspaces or external systems]
+- Out: [what this workspace produces or hands off]
+
+## Tools
+<!-- Which MCPs, skills, or APIs are active in this workspace. -->
+- [Tool name] — [what it does here]
+
+## Constraints
+<!-- Rules that apply specifically in this workspace. Project-wide rules live in CLAUDE.md. -->
+- [Constraint]

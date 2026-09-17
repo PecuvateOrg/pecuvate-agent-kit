@@ -1,0 +1,22 @@
+# Skills
+
+This file catalogs the reusable skills and slash commands available in this project. In context engineering, a skill is a repeatable, composable unit of agent behaviour: a named action Claude can be instructed to perform consistently.
+
+## What Belongs Here
+
+- Slash commands: any `/command` configured for this project, what it does, and when to use it
+- Reusable prompts: named instruction patterns that get reused across sessions
+- Automation triggers: any hooks or scheduled tasks wired to this project
+- Usage notes: any gotchas, prerequisites, or ordering constraints
+
+## Why This Matters
+
+Skills prevent re-explaining the same task every session. Documenting them here means the capability is discoverable, reusable, and improvable over time, rather than locked in someone's head or buried in chat history.
+
+## Workspace Skills
+
+If your workspace has skills available across every project (a deploy skill, a workspace-wide health check, etc.), define them once in your shared skills directory and catalogue them there rather than restating what they do here. List only skills specific to this project below, plus any workspace skill this project uses in a non-obvious way.
+
+---
+
+<!-- Add skills below as they are defined -->
