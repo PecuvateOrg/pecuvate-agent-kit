@@ -53,6 +53,11 @@ the standard itself.
 No manual file copying is required — `INSTALL.md` is written as literal
 step-by-step instructions for an agent to execute on your behalf.
 
+**Not using Claude Code?** You don't need it — see
+["If your agent isn't Claude Code"](./INSTALL.md#if-your-agent-isnt-claude-code)
+in `INSTALL.md` for how any AI coding agent can translate these skills into
+its own native format.
+
 ---
 
 ## License
