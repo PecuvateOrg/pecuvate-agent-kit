@@ -1,0 +1,43 @@
+name: verify
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: No leaked workspace paths
+        run: |
+          set -e
+          # These patterns should never appear in this repo — they identify the
+          # original private workspace this content was exported from. A hit
+          # here means a future edit reintroduced an internal path or example
+          # instead of using the genericized (~/.claude/... or Acme Corp) form.
+          PATTERN='F:[\\/]Projects|C:[\\/]Users[\\/]pecul|Frameworks[\\/]MWP Framework|Empowr'
+          if git grep -nIE "$PATTERN" -- . ':!.github/workflows/verify.yml'; then
+            echo "::error::Found a leaked workspace-only reference — see matches above."
+            exit 1
+          fi
+          echo "Clean — no workspace-only references found."
+
+      - name: Every shipped skill has valid frontmatter
+        run: |
+          set -e
+          fail=0
+          for f in skills/mwp/*/SKILL.md; do
+            if ! head -n 10 "$f" | grep -q '^name:'; then
+              echo "::error file=$f::Missing 'name:' in frontmatter"
+              fail=1
+            fi
+            if ! head -n 10 "$f" | grep -q '^description:'; then
+              echo "::error file=$f::Missing 'description:' in frontmatter"
+              fail=1
+            fi
+          done
+          exit $fail
