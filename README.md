@@ -1,5 +1,16 @@
 # PecuvateAgentKit
 
+## About
+
+### What it is
+A public collection of Claude Code skills that Pecuvate built and uses itself, made generic so anyone can use them. The first family is MWP — the Model Workspace Protocol.
+
+### What it's for
+To share working tools, not theory: skills proven on real projects, without the internal names and paths they were first written against.
+
+### How it works
+Each family of skills installs into your own Claude Code setup and works standalone. See *Installing* below.
+
 A growing public collection of Pecuvate's Claude Code skills. **MWP is the
 first family shipped.**
 
