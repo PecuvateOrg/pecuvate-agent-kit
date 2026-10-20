@@ -30,7 +30,7 @@ jobs:
         run: |
           set -e
           fail=0
-          for f in skills/mwp/*/SKILL.md; do
+          for f in skills/*/*/SKILL.md; do
             if ! head -n 10 "$f" | grep -q '^name:'; then
               echo "::error file=$f::Missing 'name:' in frontmatter"
               fail=1

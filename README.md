@@ -29,6 +29,10 @@ skills/mwp/     10 skills implementing the Model Workspace Protocol (MWP) —
                 a structure for organising a project's files so an AI coding
                 agent loads only the context a given task actually needs.
 
+skills/content/ 2 skills for a blog-first content pipeline: one article becomes
+                every platform post, the agent prepares and publishes, the
+                person only approves (and records, if they use video).
+
 mwp-spec/       The standard those skills implement: the normative spec,
                 the conformance checklist an audit runs against, and the
                 file templates the scaffolding skills generate from.
@@ -48,6 +52,13 @@ The ten MWP skills:
 | `/audit-mwp` | Audits an existing project's MWP structure and content quality |
 | `/update-mwp` | Updates MWP files when a project's structure changes |
 | `/mwp-health` | Workspace-wide MWP compliance scanner — PASS/WARN/FAIL plus a migration plan |
+
+The content family:
+
+| Skill | What it does |
+|---|---|
+| `/content-pipeline` | Sets up and runs a blog-first pipeline: stage folders, brand files, who does what, the weekly cycle |
+| `/social-connect` | Connects your own LinkedIn profile and X account for direct posting — no scheduler service — with a dry-run-first post command |
 
 For what MWP actually is and why it's structured this way, read
 [`mwp-spec/CONTEXT.md`](./mwp-spec/CONTEXT.md) — that's the entry point into
