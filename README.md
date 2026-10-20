@@ -53,7 +53,15 @@ The ten MWP skills:
 | `/update-mwp` | Updates MWP files when a project's structure changes |
 | `/mwp-health` | Workspace-wide MWP compliance scanner — PASS/WARN/FAIL plus a migration plan |
 
-The content family:
+### The content family: Content Creator Kit
+
+A tool for content creators to manage their content **locally, with an AI
+agent, using the ICM / MWP folder model**. One long-form piece becomes every
+platform post: the creator writes and approves, and the agent prepares,
+adapts and publishes. Publishing goes straight to the creator's own LinkedIn
+and X accounts, with no scheduling service in between. Built and proven on
+Pecuvate's own publishing before being shared here.
+
 
 | Skill | What it does |
 |---|---|
