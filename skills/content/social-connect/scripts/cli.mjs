@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // Social CLI — publish directly to LinkedIn (personal profile) and X.
+//   node cli.mjs set     <KEY>                 store a credential (hidden prompt)
 //   node scripts/social/cli.mjs connect <linkedin|x>   one-time sign-in (browser)
 //   node scripts/social/cli.mjs whoami  <linkedin|x>   check the stored connection
 //   node scripts/social/cli.mjs post    <linkedin|x> <file> [--publish]
@@ -8,13 +9,22 @@
 import { createServer } from 'node:http'
 import { randomBytes, createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
+import { createInterface } from 'node:readline'
 import { platforms, PORT } from './platforms.mjs'
+import { putSecret } from './secrets.mjs'
 
 const [cmd, name, file, ...flags] = process.argv.slice(2)
 const platform = platforms[name]
-if (!platform || !['connect', 'whoami', 'post'].includes(cmd)) {
-  console.error('Usage: cli.mjs <connect|whoami|post> <linkedin|x> [file] [--publish]')
+if (cmd === 'set' ? !/^[A-Z][A-Z0-9_]*$/.test(name ?? '') : !platform || !['connect', 'whoami', 'post'].includes(cmd)) {
+  console.error('Usage: cli.mjs set <KEY> | cli.mjs <connect|whoami|post> <linkedin|x> [file] [--publish]')
   process.exit(1)
+}
+
+// Hidden prompt: the value is never echoed, logged or placed in shell history.
+function promptHidden(question) {
+  const rl = createInterface({ input: process.stdin, output: process.stdout, terminal: true })
+  rl._writeToOutput = (s) => { if (s.includes(question)) process.stdout.write(s) }
+  return new Promise((resolve) => rl.question(question, (v) => { rl.close(); process.stdout.write('\n'); resolve(v.trim()) }))
 }
 
 const X_LIMIT = 280
@@ -63,6 +73,12 @@ async function post() {
 }
 
 try {
+  if (cmd === 'set') {
+    const value = await promptHidden(`Paste ${name} (hidden), then Enter: `)
+    if (!value) throw new Error('nothing entered')
+    await putSecret(name, value)
+    console.log(`${name} saved (${value.length} characters).`)
+  }
   if (cmd === 'connect') await connect()
   if (cmd === 'whoami') {
     const me = await platform.whoami()

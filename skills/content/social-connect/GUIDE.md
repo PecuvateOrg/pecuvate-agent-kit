@@ -31,16 +31,28 @@ Callback for both: `http://localhost:8743/callback` (change the port with `AGENT
 3. **Keys and tokens** → copy the **OAuth 2.0** Client ID and Client Secret (not the "API Key and Secret" pair). The secret shows once; regenerate if missed.
 4. **Billing → buy credits.** A card alone is not enough: without credits, posting returns HTTP 402 `credits-depleted`.
 
-## 3. Store credentials — the handover
+## 3. Store credentials
 
-The user runs these in their own terminal. The **leading space** keeps each line out of shell history (bash/zsh with `HISTCONTROL=ignoreboth` / `setopt HIST_IGNORE_SPACE`). They replace each placeholder; the agent never sees the values.
+**Choose where keys live** with `AGENT_KIT_SOCIAL_STORE` (set it in the shell profile so every run uses the same store):
+
+| Store | Value | For | Notes |
+|---|---|---|---|
+| Computer keychain | `keychain` (default) | Most people | macOS Keychain, Windows Credential Manager, Linux Secret Service. Encrypted, built in, no sign-up. Linux needs `secret-tool` (package `libsecret-tools`) and a desktop session |
+| 1Password | `1password` | People who already use it | Needs the `op` CLI signed in. Vault: `AGENT_KIT_SOCIAL_OP_VAULT` (default `Private`); one item per key, titled `agent-kit-social <KEY>` |
+| Local file | `file` | Headless servers with no keychain | `~/.config/agent-kit-social/secrets.json`, owner-only (600). Plain text on disk: the weakest option |
+
+Environment variables with the same names override any store on read. For a team secrets manager, add a backend to `scripts/secrets.mjs` (a `get` and a `put`); nothing else changes.
+
+**Enter each key at a hidden prompt.** The user runs these in their own terminal and pastes each value when asked; nothing is echoed, logged or saved in shell history, and the agent never sees it:
 
 ```bash
- mkdir -p ~/.config/agent-kit-social && chmod 700 ~/.config/agent-kit-social
- node -e 'const f=process.argv[1],fs=require("fs");const s=fs.existsSync(f)?JSON.parse(fs.readFileSync(f)):{};Object.assign(s,{LINKEDIN_CLIENT_ID:"<paste>",LINKEDIN_CLIENT_SECRET:"<paste>",X_CLIENT_ID:"<paste>",X_CLIENT_SECRET:"<paste>"});fs.writeFileSync(f,JSON.stringify(s,null,2),{mode:0o600})' ~/.config/agent-kit-social/secrets.json
+node cli.mjs set LINKEDIN_CLIENT_ID
+node cli.mjs set LINKEDIN_CLIENT_SECRET
+node cli.mjs set X_CLIENT_ID
+node cli.mjs set X_CLIENT_SECRET
 ```
 
-Prefer a real secrets manager? Replace `getSecret`/`putSecret` in `scripts/secrets.mjs`; nothing else changes. Environment variables with the same names also override the file.
+Every store receives values on stdin, never as command-line arguments (which other processes can read). Sign-in tokens (§ 5) are saved to the same store automatically.
 
 ## 4. Validate with the provider before use
 
