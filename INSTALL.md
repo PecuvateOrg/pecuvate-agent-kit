@@ -30,6 +30,13 @@ copying that one skill and note it — do not overwrite silently. Report to the
 user which skills (if any) were skipped, so they can decide whether to
 overwrite the existing copy by hand.
 
+### 1b. Install the content skills (optional)
+
+Copy each subfolder of `skills/content/` (`content-pipeline/`, `social-connect/`)
+into the same skills folder as step 1, with the same rule: children only, skip
+and report any that already exist. `social-connect/scripts/` needs Node 20+ and
+has no dependencies.
+
 ### 2. Install the spec
 
 Copy the whole `mwp-spec/` folder into:
