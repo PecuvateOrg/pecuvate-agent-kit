@@ -8,28 +8,20 @@ A hosted scheduler mainly sells *access*: it has been approved by every platform
 
 | Platform | Access for your own account (checked Oct 2026 — re-verify) |
 |---|---|
-| LinkedIn personal profile | Self-serve app: "Share on LinkedIn" + "Sign In with LinkedIn using OpenID Connect" |
-| LinkedIn company page | Needs LinkedIn's approval for the Community Management API (weeks). Not covered by this CLI yet |
+| LinkedIn personal profile | Self-serve: "Share on LinkedIn" + "Sign In with LinkedIn using OpenID Connect" |
+| LinkedIn company Page | Separate app with the Community Management API; needs LinkedIn's approval |
 | X | Pay-per-use API, **prepaid credits**: ~$0.015 per post, ~$0.20 if the post contains a link |
-| YouTube | Uploads from an unverified app stay private until Google audits the app |
-| TikTok | Private-only until audited; posting to the user's drafts works before that |
-| Instagram / Threads | "Instagram API with Instagram Login" — no Facebook Page needed; Business or Creator account required |
+| YouTube | External app "In production", unverified: works for your own channel; an unlisted test upload stayed unlisted |
+| TikTok | Drafts to the app Inbox with Sandbox keys before review; Direct Post private-account-only until its own review |
+| Instagram | Instagram API with Instagram Login, accounts added as testers (Standard Access, no review); Business or Creator account; media from a public URL |
 
-## 2. Create the developer apps (user does this, in their browser)
+Posting **for other people's accounts** (clients) is different: each platform treats it as multi-tenant access with stricter review (TikTok and LinkedIn audits, Meta Advanced Access and business verification). Plan for that separately.
 
-Callback for both: `http://localhost:8743/callback` (change the port with `AGENT_KIT_SOCIAL_PORT`).
+## 2. Create the developer apps (person does this, in their browser)
 
-**LinkedIn** — https://www.linkedin.com/developers/apps/new
-1. Name the app, attach it to a LinkedIn company page the user administers (LinkedIn requires one), add a privacy policy URL and logo.
-2. **Settings** tab → **Verify** next to the page → open the generated URL as the page admin.
-3. **Products** tab → request **Share on LinkedIn** and **Sign In with LinkedIn using OpenID Connect** (instant).
-4. **Auth** tab → add the callback under *Authorized redirect URLs*. Client ID and Primary Client Secret are on this tab.
+**Follow the playbook for each platform: [platforms/README.md](platforms/README.md).** Each one lists the prerequisites, every step marked person or agent, the form answers reviewers read, how to check the keys, and the errors we have hit. Track progress in [TRACKER.md](TRACKER.md).
 
-**X** — https://developer.x.com/en/portal/petition/essential/basic-info
-1. Sign up **as the account that will post**. Use-case text that passes review: *"I will use the X API to publish my own content to my own X account. I review and approve every post before it is published. I will not post on behalf of other users, collect other users' data, send automated replies or DMs, or share X data with third parties. Around two to ten posts per week."*
-2. App → **User authentication settings** → Read and write; Web App, Automated App or Bot; the callback; a website URL.
-3. **Keys and tokens** → copy the **OAuth 2.0** Client ID and Client Secret (not the "API Key and Secret" pair). The secret shows once; regenerate if missed.
-4. **Billing → buy credits.** A card alone is not enough: without credits, posting returns HTTP 402 `credits-depleted`.
+Callback for every platform: `http://localhost:8743/callback` (change the port with `AGENT_KIT_SOCIAL_PORT`, and change it in every app).
 
 ## 3. Store credentials
 
@@ -46,24 +38,19 @@ Environment variables with the same names override any store on read. For a team
 **Enter each key at a hidden prompt.** The user runs these in their own terminal and pastes each value when asked; nothing is echoed, logged or saved in shell history, and the agent never sees it:
 
 ```bash
-node cli.mjs set LINKEDIN_CLIENT_ID
+node cli.mjs set LINKEDIN_CLIENT_ID      # key names for each platform: its playbook, § Credentials
 node cli.mjs set LINKEDIN_CLIENT_SECRET
-node cli.mjs set X_CLIENT_ID
-node cli.mjs set X_CLIENT_SECRET
 ```
 
 Every store receives values on stdin, never as command-line arguments (which other processes can read). Sign-in tokens (§ 5) are saved to the same store automatically.
 
 ## 4. Validate with the provider before use
 
-Send a deliberately invalid authorization code. A good client secret gets past the client check; a bad one is rejected for the client itself.
-
-- **LinkedIn:** good credentials return `invalid_request … authorization code not found`; bad ones return `invalid_client`.
-- **X:** compare the real secret with a deliberately wrong one. Good: HTTP **400** (bad code). Bad: HTTP **401**. Only the status code is printed.
+Send a deliberately invalid authorization code and compare the response with a deliberately wrong secret. The per-platform checks are in each playbook under § Credentials. Print status codes and error names only, never values. Some providers check the code before the secret (LinkedIn does), so a pass there proves only the client ID: the first `connect` is the real test.
 
 ## 5. One-time sign-in
 
-`node cli.mjs connect linkedin` (then `x`) prints a link and waits on the callback port. The user opens it, signs in **as the account that should post**, and approves.
+`node cli.mjs connect <target>` prints a link and waits on the callback port. The user opens it, signs in **as the account that should post**, and approves.
 
 **Browser on another machine?** (e.g. the CLI runs on a workstation over SSH.) The callback to `localhost` must reach the CLI. On the browser's machine first run:
 
@@ -77,16 +64,27 @@ Without this, the approve button appears to hang and the CLI never receives the 
 
 | Platform | Lifetime | Renewal |
 |---|---|---|
-| LinkedIn | Access token 60 days; no refresh token on these products | Run `connect linkedin` again before expiry — put the date somewhere you will see it |
-| X | Access token 2 hours; refresh token **rotates on every use** | Automatic: the CLI saves each new refresh token and re-reads it. If the store write fails, run `connect x` again |
+| LinkedIn (both apps) | Access token 60 days; no refresh token | Run `connect` again before expiry: note the date in TRACKER.md |
+| X | Access 2 hours; refresh token **rotates on every use** | Automatic; if a save fails, `connect x` again |
+| YouTube | Refresh token long-lived (app "In production") | Revoked if the app is removed from the Google account or unused 6 months |
+| TikTok | Access 24 hours; refresh 365 days, may rotate | Automatic within the year; Sandbox → production needs a new `connect` |
+| Instagram | 60 days, refreshed on every use | Automatic if used at least every couple of months |
 
 ## 7. Posting
 
+Every `post` is a **dry run** unless `--publish` is passed. Show the dry run, get a yes, then publish.
+
 ```bash
-node cli.mjs post linkedin post.txt            # dry run: shows text and length
-node cli.mjs post linkedin post.txt --publish
-node cli.mjs post x thread.txt --publish       # X thread: separate posts with a line containing only ---
+node cli.mjs post linkedin post.txt [--publish]          # also linkedin-page
+node cli.mjs post x thread.txt [--publish]               # thread: posts separated by a line containing only ---
+node cli.mjs post youtube video.mp4 --title "…" [--description desc.txt] [--privacy private|unlisted|public] [--publish]
+node cli.mjs post tiktok-<label> video.mp4 [--publish]   # draft to the TikTok Inbox
+node cli.mjs post tiktok-<label> video.mp4 --direct --privacy <level> [--caption c.txt] [--no-comment] [--no-duet] [--no-stitch] [--brand-own|--brand-paid] [--aigc] [--publish]
+node cli.mjs post instagram-<label> a.jpg [b.jpg …|reel.mp4|https://…] [--caption c.txt] [--publish]
 ```
 
-- LinkedIn commentary escapes its reserved characters, so `#hashtags` post as plain text rather than linked tags.
+- LinkedIn escapes its reserved characters, so `#hashtags` post as plain text rather than linked tags.
 - A failed post in the middle of an X thread leaves the earlier posts up; the error says which post failed.
+- YouTube defaults to `private` and reports the privacy YouTube actually applied.
+- TikTok Direct Post has no default privacy, by TikTok's rules: the dry run lists the levels the account allows.
+- Instagram media is staged by `scripts/media-host.mjs` and deleted after the post, even on failure.

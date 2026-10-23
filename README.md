@@ -58,15 +58,15 @@ The ten MWP skills:
 A tool for content creators to manage their content **locally, with an AI
 agent, using the ICM / MWP folder model**. One long-form piece becomes every
 platform post: the creator writes and approves, and the agent prepares,
-adapts and publishes. Publishing goes straight to the creator's own LinkedIn
-and X accounts, with no scheduling service in between. Built and proven on
+adapts and publishes. Publishing goes straight to the creator's own LinkedIn,
+X, YouTube, TikTok and Instagram accounts, with no scheduling service in between. Built and proven on
 Pecuvate's own publishing before being shared here.
 
 
 | Skill | What it does |
 |---|---|
 | `/content-pipeline` | Sets up and runs a blog-first pipeline: stage folders, brand files, who does what, the weekly cycle |
-| `/social-connect` | Connects your own LinkedIn profile and X account for direct posting — no scheduler service — with a dry-run-first post command |
+| `/social-connect` | Connects your own LinkedIn (profile + company Page), X, YouTube, TikTok and Instagram for direct posting — no scheduler service. One playbook per platform (app setup, reviews, form answers, known errors), a setup tracker, and a dry-run-first post command |
 
 For what MWP actually is and why it's structured this way, read
 [`mwp-spec/CONTEXT.md`](./mwp-spec/CONTEXT.md) — that's the entry point into

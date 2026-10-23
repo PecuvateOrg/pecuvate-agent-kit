@@ -86,7 +86,11 @@ if (!backend) throw new Error(`AGENT_KIT_SOCIAL_STORE=${STORE}: no such backend 
 
 export async function getSecret(name) {
   const value = process.env[name] ?? backend.get(name)
-  if (typeof value !== 'string' || !value) throw new Error(`${name} is not set: run \`node cli.mjs set ${name}\``)
+  if (typeof value !== 'string' || !value) {
+    // Tokens and URNs come from signing in; app keys are entered by the person.
+    const fix = /TOKEN|URN/.test(name) ? 'sign in first: `node cli.mjs connect <target>`' : `run \`node cli.mjs set ${name}\``
+    throw new Error(`${name} is not set: ${fix}`)
+  }
   return value
 }
 
