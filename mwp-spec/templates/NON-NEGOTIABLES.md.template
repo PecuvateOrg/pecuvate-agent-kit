@@ -1,0 +1,18 @@
+# [PROJECT NAME] — Non-Negotiables
+<!-- This file is forced open every session by CLAUDE.md's Self-Reference line.
+     It is not on-demand like ordinary reference material — see spec/layers.md §
+     NON-NEGOTIABLES.md for why. Keep everything here true regardless of task type;
+     anything conditional on a specific workspace belongs in that workspace's
+     CONTEXT.md instead. -->
+
+## Rules
+<!-- Project-wide constraints. One bullet per rule, stated as a plain instruction —
+     not a topic heading, not an explanation. If it only applies to one workspace,
+     it does not belong here. -->
+- [Rule stated as a plain instruction]
+
+## Naming Conventions
+<!-- ID & Naming: project-wide only — identifiers, file naming, field naming,
+     environment variable format. Workspace-specific conventions go in that
+     workspace's CONTEXT.md. -->
+- [File type]: [naming pattern]

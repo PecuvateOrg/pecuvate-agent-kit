@@ -78,12 +78,16 @@ Rules for this file:
 
 | id | Check | Measured by | Severity |
 |---|---|---|---|
-| `leaf-file-set` | All 9 leaf files present (6 for a hub) | `ls` each name from `spec/file-set.md`. Report **which** are missing, not just that the set is incomplete | FAIL |
+| `leaf-file-set` | All 10 leaf files present (7 for a hub) | `ls` each name from `spec/file-set.md`. Report **which** are missing, not just that the set is incomplete | FAIL |
 | `adapter-casing` | `AGENTS.md` / `GEMINI.md` are uppercase on disk | `git ls-files` exact-case match — **not** `ls`, which succeeds on either | FAIL |
 | `no-lowercase-agents` | No lowercase `agents.md` | `git ls-files \| grep -x 'agents.md'` | FAIL |
 | `agent-roles-distinct` | `agent-roles.md` present and distinct from `AGENTS.md` | both tracked, different content | FAIL |
 | `hub-file-set` | Hub has no `README.md` / `agent-roles.md` / `skills.md` | absence | WARN |
-| `claude-md-sections` | `CLAUDE.md` carries all 8 components | Identity, Self-Reference, Routing Table, Cross-Workspace Flows, Naming Conventions, File Placement Rules, Token Management, Skills and Tools Available. Judge by **content**, not headings — a generic "Rules" heading does not satisfy three of them | FAIL if 3+ missing or no `CLAUDE.md`; WARN if 1–2 |
+| `claude-md-sections` | `CLAUDE.md` carries all 7 components | Identity, Self-Reference (including the forced pointer to `NON-NEGOTIABLES.md`), Routing Table, Cross-Workspace Flows, File Placement Rules, Token Management, Skills and Tools Available. Judge by **content**, not headings — a generic "Rules" heading does not satisfy three of them | FAIL if 3+ missing or no `CLAUDE.md`; WARN if 1–2 |
+| `non-negotiables-sections` | `NON-NEGOTIABLES.md` carries both components | Rules, Naming Conventions. Judge by content, not headings | WARN |
+| `non-negotiables-exists` | `NON-NEGOTIABLES.md` exists for every project carrying `CLAUDE.md` | `ls` | FAIL |
+| `non-negotiables-forced-open` | `CLAUDE.md`'s Self-Reference line points at `NON-NEGOTIABLES.md` | grep the Self-Reference sentence for the filename | FAIL |
+| `non-negotiables-reasoning-test` | Every rule in `NON-NEGOTIABLES.md` is genuinely project-wide, not workspace-specific content that drifted in | manual, at review time | WARN |
 | `skills-md-populated` | `skills.md` holds real entries | at least one `` | `/ `` table row | FAIL if none; WARN if `What belongs here` / `Why this matters` boilerplate survives. Skip if `leaf-file-set` already reported it absent |
 | `directory-orientation` | Every meaningful directory's orientation file is `CONTEXT.md` | `ls <dir>/CONTEXT.md`. A directory that orients via `index.md`, `00-index.md` or `README.md` instead **fails** — see `spec/naming.md`, *Directory orientation* | WARN |
 

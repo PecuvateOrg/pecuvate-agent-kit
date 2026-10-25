@@ -54,7 +54,41 @@ ordered steps — a project without a pipeline gains nothing but indirection.
 
 ## CLAUDE.md Tokenomics
 
+**CLAUDE.md is routing — nothing else.** The published paper is explicit about this: its own
+Layer 0 / Layer 3 diagram labels Layer 0 *"Where am I? — Structural (routing)"* and Layer 3
+*"What rules apply? — Content (factory)."* Rules are Layer 3 material, not Layer 0. An earlier
+version of this section merged the two — "routing and project-wide non-negotiables" — which was
+drift from the paper, not a deliberate choice, and is corrected here (2026-09-22). Project-wide
+non-negotiables live in their own file, `NON-NEGOTIABLES.md`, described immediately below.
+
 CLAUDE.md is the only file guaranteed to load on every session. That makes it the highest recurring token cost in the entire system. Every line in it is paid for whether you are working on onboarding, payment, or a dashboard bug fix. This is why its content must be driven by the project's intended outcomes — not by an arbitrary line count.
+
+### NON-NEGOTIABLES.md
+
+Ordinary Layer 3 reference material loads on demand — never automatically, only when a task
+needs it (see Reference File Tokenomics, further down). A project-wide non-negotiable cannot
+work that way: a rule like "never commit secrets" has to reach Claude even on a task that looks
+nothing like secrets handling, and an on-demand file only loads when Claude already suspects
+it's relevant. That is precisely the situation a non-negotiable exists to cover — the one where
+nothing about the current task would prompt Claude to go looking.
+
+The fix is not to let Layer 0 carry rules again — it is to force Layer 3's rules file open every
+time, from Layer 0. `NON-NEGOTIABLES.md` sits at the project root, next to `CLAUDE.md` — not
+inside a `references/` folder, which would put it back on the on-demand path this exists to
+avoid. `CLAUDE.md`'s Self-Reference line (component 2, below) is the one routing instruction
+that forces it open: *"read `NON-NEGOTIABLES.md` before doing anything."* That instruction is
+itself routing, not a rule — Layer 0's job is telling Claude where to find things, and this is
+telling Claude where the rules live — so it does not reintroduce rules into Layer 0's content.
+
+**Belongs in `NON-NEGOTIABLES.md`:**
+- Project-wide constraints — true regardless of what task is underway
+- ID & Naming Conventions — moved here from CLAUDE.md; see component 5's replacement, below
+- Anything currently written as "Non-Negotiables," "Constraints," or "Shared Constraints"
+  inside a project's `CLAUDE.md` — that content relocates here, it does not stay
+
+**Does not belong here:** anything conditional on task type. A rule that only applies "when
+working on payments" is workspace-specific and belongs in that workspace's `CONTEXT.md`, exactly
+as before — moving non-negotiables into their own file does not relax that boundary.
 
 ### Cross-Model Adapters
 
@@ -84,13 +118,20 @@ A folder structure in CLAUDE.md is a symptom of an incomplete routing table. The
 
 ### What CLAUDE.md Contains
 
-A complete CLAUDE.md has seven components. Each earns its place by serving the routing and orientation function — nothing else.
+A complete CLAUDE.md has seven components. Each earns its place by serving routing — nothing
+else. A component that states a constraint rather than pointing somewhere does not belong here;
+see `NON-NEGOTIABLES.md`, above.
 
 **1. Identity**
 One to two lines. What this project is and what it does. Enough for Claude to confirm it is in the right project — not enough to describe the system in detail.
 
 **2. Self-Reference**
-A single sentence stating that this file is the map. This prevents Claude from treating CLAUDE.md as a source of workspace-level detail and sets the expectation that workspace context lives elsewhere.
+Two sentences: what this file is, and the forced pointer to the rules file. Canonical wording:
+"This file is Layer 0 — routing only. Read `NON-NEGOTIABLES.md` before doing anything; project
+detail lives in `CONTEXT.md`." The first sentence prevents Claude from treating CLAUDE.md as a
+source of workspace-level detail. The second is the routing instruction that makes
+`NON-NEGOTIABLES.md` reliable despite being ordinary on-demand Layer 3 material everywhere else
+in the system — see above.
 
 **3. Routing Table**
 The core of the file. Maps every task type to a workspace, the context file to read first, and the tools to load. This is positive routing — where to go. Every row must represent a genuinely distinct task type. Rows that point to the same workspace for similar tasks should be merged. If a file or resource isn't reachable via the routing table, it should either be added or it shouldn't exist.
@@ -98,13 +139,15 @@ The core of the file. Maps every task type to a workspace, the context file to r
 **4. Cross-Workspace Flows**
 Tasks that span multiple workspaces in sequence. The routing table handles single-workspace tasks. This section handles flows where Claude must move across workspaces to complete one piece of work. Without this, Claude has no guidance for multi-workspace tasks and will either guess or ask.
 
-**5. ID & Naming Conventions**
-Project-wide conventions only — identifiers, file naming, field naming, environment variable format. Conventions that apply in only one workspace belong in that workspace's CONTEXT.md.
+**5. File Placement Rules**
+Where new files go — a lookup table shaped exactly like the Routing Table, just in the other
+direction (file type → folder, instead of task type → workspace), and triggered the same way:
+only when Claude is about to create a file. That conditional trigger is what keeps it in
+CLAUDE.md rather than `NON-NEGOTIABLES.md` — it is not a rule that applies regardless of the
+task, it is routing for the specific moment a file gets created. Without it, files accumulate in
+wrong locations and the structure degrades.
 
-**6. File Placement Rules**
-Where new files go. As a project grows, Claude will create files. Without explicit placement rules, files accumulate in wrong locations and the structure degrades. One rule per file type — short, but prevents structural drift.
-
-**7. Token Management**
+**6. Token Management**
 The most commonly missed section and the most important for tokenomics. This section tells Claude what **not** to load. The routing table is positive routing. Token Management is negative routing — explicit instructions to skip files, folders, or sections that are not relevant to the current task.
 
 Without this section, Claude defaults to reading everything in scope to orient itself. A well-written Token Management section prevents that default and is the direct implementation of the tradeoff principle from section 3.
@@ -114,7 +157,7 @@ Example instructions this section might contain:
 - Do not load reference guides unless the task involves that integration
 - Do not read historical files unless working in a workspace that requires them
 
-**8. Skills and Tools Available**
+**7. Skills and Tools Available**
 A reference list of what MCPs, skills, and slash commands are wired into this project. Prevents Claude from attempting tasks without the right tools or failing to use tools that are already available.
 
 ### What Gets Pushed Out

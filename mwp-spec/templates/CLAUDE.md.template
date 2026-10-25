@@ -3,8 +3,11 @@
 
 [One sentence description of what this project is and does.]
 
-This file is the map. Workspace detail lives in each CONTEXT.md.
-<!-- Self-Reference: tells Claude this file routes and constrains — detail lives elsewhere. -->
+This file is Layer 0 — routing only. Read NON-NEGOTIABLES.md before doing anything; project detail lives in CONTEXT.md.
+<!-- Self-Reference: canonical wording, spec/layers.md § CLAUDE.md Tokenomics. Two jobs in one
+     sentence: state what this file is, and force NON-NEGOTIABLES.md open every session. Do not
+     drop the NON-NEGOTIABLES.md clause — that clause is the only reason a file that otherwise
+     loads on demand can be trusted to reach Claude every time. -->
 
 ## Routing
 <!-- Routing Table: every task type mapped to a workspace, context file, and tools.
@@ -19,10 +22,6 @@ This file is the map. Workspace detail lives in each CONTEXT.md.
      Only include if such flows exist. Remove this section if not needed. -->
 - [Flow name]: [workspace A] → [workspace B] → [workspace C]
 
-## Naming Conventions
-<!-- ID & Naming: project-wide only. Workspace-specific conventions go in CONTEXT.md. -->
-- [File type]: [naming pattern]
-
 ## File Placement
 <!-- File Placement Rules: one rule per file type. Prevents structural drift as the project grows. -->
 - [File type] → [folder/]
@@ -34,7 +33,7 @@ This file is the map. Workspace detail lives in each CONTEXT.md.
 - Do not load reference files unless the task involves [integration/concern]
 
 ## Deployment
-<!-- Deployment: required before deploying. Domain must be a real value — not a placeholder. -->
+<!-- Deployment: required before running /netlify-deploy. Domain must be a real value — not a placeholder. -->
 - Platform: Netlify
 - Domain: <!-- e.g. app.example.com -->
 - Branch: main
@@ -44,3 +43,24 @@ This file is the map. Workspace detail lives in each CONTEXT.md.
 <!-- Skills and Tools: list what MCPs, skills, and slash commands are available.
      Prevents Claude from attempting tasks without the right tools. -->
 - /[skill-name] — [what it does]
+
+## Session Start
+<!-- Session Start: forces DEVLOG.md (and the rest of the file set) open on every session,
+     not just on demand. Without this, DEVLOG.md is reachable only if some other section
+     happens to mention it -- measured 2026-09-26: 16 of 29 estate CLAUDE.md files had no
+     path to DEVLOG.md at all, because neither this template nor CONTEXT.md.template ever
+     routed to it. This is a leaf-project list (README.md, agent-roles.md, skills.md are
+     leaf-only per spec/file-set.md) -- a hub CLAUDE.md uses the shorter hub variant instead. -->
+When the user greets you (hi, hello, hey, good morning, good afternoon, good evening), read the
+following files from the current project directory before responding — if they exist:
+
+- `NON-NEGOTIABLES.md` — project-wide rules (already forced open by CLAUDE.md's Self-Reference
+  line; listed here too for redundancy)
+- `README.md` — project overview and setup
+- `CONTEXT.md` — architecture and orientation
+- `DEVLOG.md` — recent decisions and in-progress work
+- `agent-roles.md` — agent roles and boundaries for this project
+- `skills.md` — available skills and slash commands
+- `memory.md` — persistent memory and running project state
+
+This ensures every session starts with full project context.
