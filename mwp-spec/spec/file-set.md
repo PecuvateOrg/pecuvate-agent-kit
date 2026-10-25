@@ -23,7 +23,8 @@ file set is out of date by construction — it should route here instead.
 
 | File | Leaf | Hub | Purpose |
 |---|:--:|:--:|---|
-| `CLAUDE.md` | ✅ | ✅ | Layer 0 — identity and routing |
+| `CLAUDE.md` | ✅ | ✅ | Layer 0 — routing only |
+| `NON-NEGOTIABLES.md` | ✅ | ✅ | Project-wide rules and constraints. Forced open by `CLAUDE.md`'s Self-Reference line — see `spec/layers.md` § NON-NEGOTIABLES.md |
 | `AGENTS.md` | ✅ | ✅ | Cross-model adapter — points at `CLAUDE.md`, never duplicates it |
 | `GEMINI.md` | ✅ | ✅ | Cross-model adapter — same content as `AGENTS.md` |
 | `CONTEXT.md` | ✅ | ✅ | Layer 1 — what this project contains and where to go |
@@ -34,7 +35,9 @@ file set is out of date by construction — it should route here instead.
 | `README.md` | ✅ | ❌ | Human-facing setup. A hub is not published |
 | `brand-identity.md` | ⬦ | ⬦ | Only when the project or hub owns a brand |
 
-**A leaf carries 9. A hub carries 6, plus `brand-identity.md` where a brand exists.**
+**A leaf carries 10. A hub carries 7, plus `brand-identity.md` where a brand exists.**
+`NON-NEGOTIABLES.md` was split out of `CLAUDE.md` so that Layer 0 holds routing only and the
+rules live in one file that Layer 0 forces open (see `spec/layers.md`).
 
 `agent-roles.md`, `skills.md` and `README.md` are leaf-only: roles and skills are
 per-project, and a hub ships nothing to publish. See
