@@ -1,6 +1,6 @@
 # init-mwp-developer -- Scaffold MWP structure for a web application project
 
-Sets up CLAUDE.md, AGENTS.md, agent-roles.md, memory.md, and workspace CONTEXT.md files for a Next.js/TypeScript project following the MWP framework.
+Sets up AGENTS.md, NON-NEGOTIABLES.md, agent-roles.md, memory.md, and workspace CONTEXT.md files for a Next.js/TypeScript project following the MWP framework.
 
 ---
 
@@ -34,8 +34,7 @@ Scaffolds the three-workspace structure (planning, src, ops) and generates all M
 
 ```
 root/
-|- CLAUDE.md              <- MWP Layer 0 — routing, identity, rules (no explanatory content)
-|- AGENTS.md              <- cross-model adapter; points to CLAUDE.md
+|- AGENTS.md              <- Layer 0 — identity + first-read line, task table, facts
 |- CONTEXT.md             <- MWP Layer 1 — project overview, workspace map, external services
 |- memory.md              <- current project state
 |- DEVLOG.md              <- session log, decisions, incomplete work
@@ -66,7 +65,7 @@ root/
 
 Root contains only MWP files plus `netlify.toml`. src/ is the fully self-contained Next.js project -- package.json and all config files live here alongside application code. npm commands (install, dev, build) are always run from src/.
 
-**CLAUDE.md is routing-only (Layer 0).** It must not contain explanatory content about the project. Explanation of what the project does, how workspaces are organised, and what external services it connects to belongs in CONTEXT.md (Layer 1).
+**AGENTS.md is routing-only (Layer 0).** It must not contain explanatory content about the project. Explanation of what the project does, how workspaces are organised, and what external services it connects to belongs in CONTEXT.md (Layer 1).
 
 Each workspace contains subdirectories for its major concerns. Each subdirectory has its own CONTEXT.md. The planning/ subdirectories shown above are the default for developer projects -- add more (e.g. `data-model/`, `integrations/`) only if the user confirms the project needs them.
 
@@ -117,8 +116,7 @@ Do not create asset directories during `init-mwp-developer` scaffolding -- only 
 
 | File | Key content |
 |---|---|
-| `CLAUDE.md` | Routing table, identity, token management, deployment, skills — no explanatory prose |
-| `AGENTS.md` | Lightweight cross-model adapter pointing to CLAUDE.md; no duplicated routing table |
+| `AGENTS.md` | Identity + first-read line, task table, facts (deployment) — no explanatory prose |
 | `CONTEXT.md` | What the project does, workspace map, external services, known quirks |
 | `memory.md` | Phase: "Initial setup complete" |
 | `DEVLOG.md` | Initial entry dated today: "Project scaffolded via /init-mwp-developer" |
@@ -184,7 +182,7 @@ If your workspace has its own deployment conventions doc, follow it for the paym
 
 ---
 
-## Generated CLAUDE.md — Deployment Section
+## Generated AGENTS.md — Deployment Section
 
 Always generate the Deployment section with all four fields:
 
@@ -202,7 +200,7 @@ The `Base directory: src/` line is mandatory and must always be present. Netlify
 
 ## Skills for Developer Projects
 
-The following skills are commonly useful in a developer project environment. Wire in whichever ones exist in your own Claude Code setup — the two shipped with this kit (`/audit-mwp`, `/update-mwp`) are always available; the rest are examples of the kind of skill worth adding if your environment has an equivalent, and can be safely omitted from the generated CLAUDE.md if it does not.
+The following skills are commonly useful in a developer project environment. Wire in whichever ones exist in your own Claude Code setup — the two shipped with this kit (`/audit-mwp`, `/update-mwp`) are always available; the rest are examples of the kind of skill worth adding if your environment has an equivalent, and can be safely omitted from the generated AGENTS.md if it does not.
 
 **If your environment has an equivalent skill for deployment, UI testing, or brand setup, wire it in; otherwise do the manual equivalent** (deploy by hand, test in a running dev server, add favicons/manifest by hand) **and note that in CONTEXT.md so a future session knows the gap is deliberate.**
 
@@ -224,7 +222,7 @@ The following skills are commonly useful in a developer project environment. Wir
 
 ---
 
-## Generated CLAUDE.md -- Routing Table
+## Generated AGENTS.md -- Routing Table
 
 Produce a routing table with at minimum these rows, using the actual skill names available in your setup (or omitting the Skills column entry where none exists). Add the optional rows only if confirmed by the user during setup questions.
 
@@ -241,7 +239,7 @@ Produce a routing table with at minimum these rows, using the actual skill names
 
 ---
 
-## Generated CLAUDE.md -- Skills & Tools Section
+## Generated AGENTS.md -- Skills & Tools Section
 
 Generate the list below using whichever of these skills actually exist in the target environment. Optional skills are included regardless -- they are discoverable even if not yet wired into a routing row.
 
@@ -263,12 +261,12 @@ Generate the list below using whichever of these skills actually exist in the ta
 
 | Symptom | Check |
 |---|---|
-| CLAUDE.md contains project description prose | Move it to CONTEXT.md -- CLAUDE.md is Layer 0 routing only |
-| AGENTS.md duplicates CLAUDE.md | Replace it with the lightweight adapter template -- duplicated routing drifts |
+| AGENTS.md contains project description prose | Move it to CONTEXT.md -- AGENTS.md is Layer 0 routing only |
+| A CLAUDE.md exists beside AGENTS.md | Merge it into AGENTS.md and delete it -- it would replace AGENTS.md in Claude Code |
 | DEVLOG.md / agent-roles.md / skills.md missing | These are required standard files -- generate them at scaffold time |
-| Domain missing from CLAUDE.md | User did not provide it -- leave the placeholder; fill in before deploying |
-| Base directory missing from CLAUDE.md | Always add `Base directory: src/` to the Deployment section -- this is mandatory |
-| Netlify can't find Next.js project | Base directory must be set to `src/` in Netlify -- check ops/CONTEXT.md and CLAUDE.md Deployment section. Also verify `netlify.toml` exists at **repo root** (not inside src/) with `base = "src"`. |
+| Domain missing from AGENTS.md | User did not provide it -- leave the placeholder; fill in before deploying |
+| Base directory missing from AGENTS.md | Always add `Base directory: src/` to the Deployment section -- this is mandatory |
+| Netlify can't find Next.js project | Base directory must be set to `src/` in Netlify -- check ops/CONTEXT.md and AGENTS.md Deployment section. Also verify `netlify.toml` exists at **repo root** (not inside src/) with `base = "src"`. |
 | `/` shows Next.js default welcome page | `src/app/page.tsx` was not replaced at scaffold time -- delete it or replace with a redirect to the actual root route |
 | `@/components/X` not found at build time | Check `src/tsconfig.json` paths -- `@/*` must be `"./*"` not `"./src/*"`. The latter adds an extra `src/` prefix that doesn't exist when src/ IS the project root. |
 | CI build fails, SSR pages return 404 | `@netlify/plugin-nextjs` missing from `src/package.json` devDependencies or missing from `netlify.toml` plugins section -- without it Netlify serves .next as static files only |

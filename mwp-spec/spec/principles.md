@@ -19,14 +19,14 @@ This is not about organisation for its own sake. It is about ensuring that Claud
 
 ### Context Window
 
-Claude's context window is the total budget for everything in a session — system prompt, injected files, conversation history, tool results, and responses. It is consumed by everything, not just files you deliberately load. Check current model documentation for the exact figure; treat the numbers below as illustrative rather than exact.
+Claude Sonnet 4.6 has a **200,000 token context window**. This is the total budget for everything in a session — system prompt, injected files, conversation history, tool results, and responses. It is consumed by everything, not just files you deliberately load.
 
 ### What Eats the Budget
 
 | Source | Approx tokens per session |
 |---|---|
 | System prompt + global rules | 2,000–3,000 |
-| CLAUDE.md + memory file | 1,000–1,500 |
+| AGENTS.md + memory file | 1,000–1,500 |
 | Workspace context files read | 1,500–2,000 each |
 | Conversation history (1 hour) | 10,000–30,000 |
 | File reads and tool results | 2,000–5,000 per read |
@@ -43,12 +43,27 @@ Token cost scales with line count. The conversion is approximate:
 
 | File type | Line ceiling | Approx tokens | Rationale |
 |---|---|---|---|
-| CLAUDE.md | 50 lines | ~600–800 | Loaded every session — fixed cost, must be minimal |
+| AGENTS.md | No numeric ceiling — the Reasoning Test ([layers.md](./layers.md)) | varies with project complexity | Loaded every session, but bounded by function (routing only) instead of a line count — see below |
+| NON-NEGOTIABLES.md | No numeric ceiling — same reasoning as AGENTS.md | varies with how many real rules exist | Delivered every session by the context-loader hook, and named in AGENTS.md's first-read line, so it carries the same fixed cost as AGENTS.md and earns the same functional bound: a rule stays only if it is genuinely project-wide, not because a line count allows it |
 | Workspace CONTEXT.md | 100–150 lines | ~1,500–2,000 | Loaded per task — can carry more, still focused |
 | Deep reference files | 200–300 lines | ~3,000–4,000 | Loaded only when explicitly needed |
 | Archive / historical | No ceiling | — | Never loaded into active sessions |
 
 **The test for any file:** if it is loaded at session start, every line is a recurring cost. If it is loaded only on demand, it has more headroom. Size files accordingly.
+
+**AGENTS.md's and NON-NEGOTIABLES.md's ceilings are functional, not numeric — deliberately, not
+by oversight.** [layers.md](./layers.md) sets AGENTS.md's bound as the Reasoning Test: a line
+stays only if removing it would make Claude route worse. `NON-NEGOTIABLES.md` gets the identical
+treatment because AGENTS.md forces it open every session — it has the same fixed-cost profile as
+AGENTS.md itself, even though ordinary Layer 3 reference material does not. A fixed line cap on
+either one either starves a project with several distinct workspaces and real non-negotiables,
+or fails to bound a simple project that has none. Workspace CONTEXT.md and reference files keep
+a numeric ceiling because
+their load is conditional — a breach there costs only the task that triggers it, not every
+session. **Measured 2026-09-22: 27 of 33 Layer 0 files in the reference estate already exceeded 50
+lines** — the numeric cap was never tracking reality. Do not reconcile this asymmetry as a
+contradiction later; it is deliberate, the same way an estate's own force-push
+hardening is a deliberate departure from the spec default rather than an oversight.
 
 ### Auto-Compaction
 
@@ -78,7 +93,7 @@ This principle governs every file sizing and loading decision in the layers belo
 
 A well-structured project can still burn through its context window inefficiently if the session itself is undisciplined. Session discipline is the set of habits that control how the context window is used during active work — the behavioural layer on top of the file structure.
 
-The framework document covers the structure. The practical instructions that enforce session discipline belong in CLAUDE.md and memory.md, where Claude reads them as executable rules. What follows is a brief account of each discipline area and where its tokenomics reasoning is grounded in this document.
+The framework document covers the structure. The practical instructions that enforce session discipline belong in AGENTS.md and memory.md, where Claude reads them as executable rules. What follows is a brief account of each discipline area and where its tokenomics reasoning is grounded in this document.
 
 | Discipline | What it means | Covered in |
 |---|---|---|
@@ -128,3 +143,4 @@ Ambiguity in content does not stay contained. It propagates through the session:
 The framework reduces the structural cost of working with Claude. Content quality reduces the correction cost. Both are required for the system to work efficiently and optimally.
 
 ---
+

@@ -13,7 +13,7 @@ Route to the correct MWP initialisation skill based on project type.
 
 ## Steps
 
-1. **Read the existing project.** Scan what already exists: folder structure, any existing CLAUDE.md, README, or context files.
+1. **Read the existing project.** Scan what already exists: folder structure, any existing AGENTS.md or CLAUDE.md, README, or context files.
 
 2. **Ask the user one question:** What is this project for? (plain English description — no need to name a type)
 

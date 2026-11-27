@@ -45,7 +45,7 @@ Related definitions owned elsewhere:
 
 | Detail | Owner |
 |---|---|
-| The 8 required `CLAUDE.md` components, and what each is for | `~/.claude/mwp-spec/spec/layers.md` |
+| The three `AGENTS.md` parts, and what each is for | `~/.claude/mwp-spec/spec/layers.md` |
 | Which files a project root carries, and their casing | `~/.claude/mwp-spec/spec/file-set.md` |
 | Why a directory's orientation file is `CONTEXT.md` | `~/.claude/mwp-spec/spec/naming.md`, *Directory orientation* |
 | Deliberate deviations already decided | `~/.claude/mwp-spec/conformance/known-exceptions.md` |
@@ -139,7 +139,7 @@ If `netlify.toml` exists inside `src/`, move it to root and update the `base` se
 
 ### Rogue CLAUDE.md or AGENTS.md in src/ (`no-src-adapters`)
 
-Delete the file from `src/`. The root-level CLAUDE.md and AGENTS.md already cover all work in the project including `src/`-scoped sessions. No replacement file is needed in `src/` — only `src/CONTEXT.md` should exist there.
+Delete the file from `src/`. The root-level AGENTS.md already cover all work in the project including `src/`-scoped sessions. No replacement file is needed in `src/` — only `src/CONTEXT.md` should exist there.
 
 Check whether the file was generated rather than authored — Next.js scaffolding emits an `src/AGENTS.md` notice, which is how a project can acquire one without anyone writing it deliberately.
 
@@ -163,7 +163,7 @@ If the directory already orients via `index.md`, `00-index.md` or `README.md`, r
 | Symptom | Check |
 |---------|-------|
 | Project shows as Unknown type | No `src/`, `netlify.toml`, `integrations/`, `sanity.config.ts`, `schema/`, `schemaTypes/` or `studio/` found — check folder names match expected conventions. Unknown is not a skip: every section except *Web application layout* still applies |
-| `claude-md-sections` reports sections missing despite them being present | Section headings may use non-standard wording — check CLAUDE.md manually against `~/.claude/mwp-spec/spec/layers.md` |
+| `claude-md-sections` reports sections missing despite them being present | Section headings may use non-standard wording — check AGENTS.md manually against `~/.claude/mwp-spec/spec/layers.md` |
 | `netlify-base` FAIL but netlify.toml exists | It may be inside `src/` — check path |
 | Every project fails `leaf-file-set` | MWP files may never have been scaffolded — run `/init-mwp` then re-run `/mwp-health` |
 | A combined health orchestrator is missing structure findings | It is not yet wired to call mwp-health — add the integration step above |

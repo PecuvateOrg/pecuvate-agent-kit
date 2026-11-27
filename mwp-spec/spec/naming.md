@@ -14,9 +14,8 @@ Fixed by [file-set.md](./file-set.md), including casing. Not a project's choice.
 Lowercase kebab-case: `planning/`, `ops/`, `src/`, `workspace-docs/`.
 
 A `workspace-docs/<name>/` directory is named after the **repository**, not the
-working directory. It's common for a hub with several child repos to have at least
-one whose directory name differs from its repo name; naming by directory would make
-the mapping unguessable.
+working directory. In the reference estate, four of six child repos have a directory name that differs
+from their repo name; naming by directory would have made the mapping unguessable.
 
 ## Directory orientation
 
@@ -33,18 +32,18 @@ alternatives — that list is where the drift starts.
 [file-set.md](./file-set.md), addressed to a human arriving at a repository. It sits
 alongside `CONTEXT.md` and never substitutes for it.
 
-**`index` is reserved for catalogues.** A `*-index.md` enumerates items — a
-`skills-index.md` might list every skill in a skills directory. Enumerating is not
-orienting: such a file sits *beside* that directory's `CONTEXT.md`, never instead of
-it, and must not be renamed to `CONTEXT.md` on the strength of the rule above.
+**`index` is reserved for catalogues.** A `*-index.md` enumerates items —
+`skills/skills-index.md` lists every skill. Enumerating is not orienting: such a file
+sits *beside* that directory's `CONTEXT.md`, never instead of it, and must not be
+renamed to `CONTEXT.md` on the strength of the rule above.
 
-**KB vaults are outside this rule, by citation, if you run one.** An Obsidian vault's
-Layer 1 file is conventionally `index.md`. If your knowledge-base framework places it
-in "the MWP `CONTEXT.md` slot" and keeps the different name deliberately — because the
-vault's answer to "what is here" is a catalog of atomic pages, and the file doubles as
-the graph tool's home note — MWP cites that decision rather than overriding it, on the
-same footing as the fields listed under "Citing outside this directory" in
-[CONTEXT.md](./CONTEXT.md).
+**KB vaults are outside this rule, by citation.** An Obsidian vault's Layer 1 file is
+`index.md`. The KB spec §5 places it in "the MWP `CONTEXT.md` slot" and keeps the
+different name deliberately: the vault's answer to "what is here" is a catalog of
+atomic pages, and the file doubles as the Obsidian graph's home note. The name is
+load-bearing there — `[[index]]` wikilinks resolve to it and the tool treats it as the
+entry point. MWP cites that decision rather than overriding it, on the same footing as
+the fields listed under "Citing outside this directory" in [CONTEXT.md](./CONTEXT.md).
 
 ## Documents
 
@@ -76,6 +75,5 @@ users than this one. Where a project has no external convention to follow:
 ## The naming test
 
 **Can two different files collide under this name on a case-insensitive filesystem?**
-If yes, the convention is unsafe regardless of how it reads. Assume every machine in
-your estate is case-insensitive unless you have verified otherwise; a rule that only
-holds on Linux does not hold everywhere.
+If yes, the convention is unsafe regardless of how it reads. Every machine in this
+estate is case-insensitive; a rule that only holds on Linux does not hold.

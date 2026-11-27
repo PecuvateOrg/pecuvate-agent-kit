@@ -1,6 +1,6 @@
 ---
 name: init-mwp-hub
-description: Scaffold an MWP structure for a parent hub workspace — a Layer 1 product hub that contains nested child project repos rather than code of its own. Invoked by init-mwp when the project type is matched, or directly via /init-mwp-hub. Sets up the 7-file hub root (CLAUDE.md, AGENTS.md, GEMINI.md, CONTEXT.md, DEVLOG.md, memory.md, brand-identity.md), a .gitignore covering every nested child repo, and an optional workspace-docs/ directory holding internal docs on behalf of public child repos.
+description: Scaffold an MWP structure for a parent hub workspace — a Layer 1 product hub that contains nested child project repos rather than code of its own. Invoked by init-mwp when the project type is matched, or directly via /init-mwp-hub. Sets up the 6-file hub root (AGENTS.md, NON-NEGOTIABLES.md, CONTEXT.md, DEVLOG.md, memory.md, brand-identity.md), a .gitignore covering every nested child repo, and an optional workspace-docs/ directory holding internal docs on behalf of public child repos.
 ---
 
 **Before doing anything else:** confirm `~/.claude/mwp-spec/spec/CONTEXT.md` is readable. If it is not, stop and tell the user to finish the spec-install step in this repo's INSTALL.md — do not improvise MWP structure from memory.
@@ -16,9 +16,7 @@ job is to route to its children and hold what is true across all of them.
 
 ```
 hub-root/
-|- CLAUDE.md            <- Layer 0 — routing to child projects only
-|- AGENTS.md            <- cross-model adapter; points to CLAUDE.md
-|- GEMINI.md            <- cross-model adapter; points to CLAUDE.md
+|- AGENTS.md            <- Layer 0 — identity + first-read line, task table, facts
 |- CONTEXT.md           <- Layer 1 — the room description for this hub
 |- DEVLOG.md            <- hub-level decisions only, never child entries
 |- memory.md            <- hub-level state
@@ -93,7 +91,7 @@ silently, staging nothing and reporting success. The files must physically move.
 
 Three layers, all required:
 
-1. **Routing** — the child's `CLAUDE.md` declares where its docs now live
+1. **Routing** — the child's `AGENTS.md` declares where its docs now live
 2. **Resolution** — your closeout process (if you have one) reads that declaration instead of assuming `./DEVLOG.md`
 3. **Enforcement** — the child's `.gitignore` lists both files, and its CI fails
    if either reappears
@@ -111,7 +109,7 @@ cross-cutting content at fixed session cost.
 
 ### 7. Register the hub
 
-If your workspace has a root-level `CLAUDE.md` (routing table) and `CONTEXT.md`
+If your workspace has a root-level `AGENTS.md` (routing table) and `CONTEXT.md`
 (projects table) above this hub, add the hub to both. If your workspace has no
 such root files, skip this step — a hub does not require one to function.
 

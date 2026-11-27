@@ -1,6 +1,15 @@
 # [Project Name]
 
-[One or two sentences: what this project is and what it does.]
+## About
+
+### What it is
+[One or two sentences a non-developer understands.]
+
+### What it's for
+[The aim, and why it is worth building.]
+
+### How it works
+[A short description of the flow — numbered steps if it has them.]
 
 ## Setup
 
@@ -23,4 +32,4 @@ Copy `.env.example` to `.env.local` and fill in values before running locally.
 - Branch: main
 - Domain: [domain, or "not yet assigned"]
 
-See `CLAUDE.md` and `ops/CONTEXT.md` (or equivalent) for full deployment detail.
+See `AGENTS.md` and `ops/CONTEXT.md` (or equivalent) for full deployment detail.

@@ -15,7 +15,7 @@ Skills prevent re-explaining the same task every session. Documenting them here 
 
 ## Workspace Skills
 
-If your workspace has skills available across every project (a deploy skill, a workspace-wide health check, etc.), define them once in your shared skills directory and catalogue them there rather than restating what they do here. List only skills specific to this project below, plus any workspace skill this project uses in a non-obvious way.
+Skills available everywhere (`/closeout`, `/git-sweep`, `/mwp-health`, etc.) are installed in `~/.claude/skills/`. Reference those by name — do not restate what they do here. List only skills specific to this project below, plus any workspace skill this project uses in a non-obvious way.
 
 ---
 

@@ -1,6 +1,6 @@
 # init-mwp-cms — Scaffold MWP structure for a CMS or content backend project
 
-Sets up the full 9-file MWP root (CLAUDE.md, AGENTS.md, GEMINI.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, README.md) plus workspace CONTEXT.md files for a Sanity CMS project following the MWP framework.
+Sets up the full 8-file MWP root (AGENTS.md, NON-NEGOTIABLES.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, README.md) plus workspace CONTEXT.md files for a Sanity CMS project following the MWP framework.
 
 ---
 
@@ -33,7 +33,7 @@ Scaffolds the three-workspace structure (schema, studio, queries) and generates 
 
 ```
 root/
-├── CLAUDE.md
+├── AGENTS.md
 ├── AGENTS.md
 ├── CONTEXT.md
 ├── DEVLOG.md
@@ -73,7 +73,7 @@ root/
 
 ## Pairing with a Frontend
 
-If the CMS is paired with a frontend project, note the relationship in the `## Cross-Workspace Flows` section of CLAUDE.md. The frontend project's ops/CONTEXT.md should reference the Sanity project ID and dataset name.
+If the CMS is paired with a frontend project, note the relationship in the `## Cross-Workspace Flows` section of AGENTS.md. The frontend project's ops/CONTEXT.md should reference the Sanity project ID and dataset name.
 
 ---
 

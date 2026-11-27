@@ -17,7 +17,7 @@ is no second standard to reconcile.
 | [principles.md](./principles.md) | Aims, token awareness, file ceilings, session discipline, content quality | Deciding whether something belongs in a file at all |
 | [layers.md](./layers.md) | The context hierarchy and each file type's cost profile | Deciding *which* file something belongs in |
 | [session-memory.md](./session-memory.md) | Opt-in shared recording, recall and vault routing | Adopting cross-agent session memory |
-| [file-set.md](./file-set.md) | Which files a project carries, hub vs leaf, casing | Scaffolding or auditing a project root |
+| [file-set.md](./file-set.md) | Which files a project carries, hub vs leaf, casing, **declaring a credential source** | Scaffolding or auditing a project root |
 | [naming.md](./naming.md) | Filenames and identifiers | Creating any new file |
 | [metadata.md](./metadata.md) | Frontmatter fields and which documents carry them | Creating or trusting a document |
 | [workspaces.md](./workspaces.md) | How the hierarchy is shaped per kind of work | Designing a project's internal structure |
@@ -34,40 +34,32 @@ The failures that need judgement rather than a check live in
 
 Every rule has exactly one home. Other files point at it.
 
-This is not stylistic. Duplication of this kind is a known failure mode for
-documentation that spans a workspace — a rule copied into two or three places
-starts identical and drifts the moment one copy is edited and the others are not.
-The fix is a pointer, not a warning:
+This is not stylistic. Duplication here has failed three times and been measured:
 
-- A structural rule defined in three separate copies across a workspace — a
-  project, a shared guides folder, and the framework spec itself — with all
-  three tracked in git and all three divergent, and the workspace's own routing
-  table pointing at the *least*-edited one.
-- A required file set defined in three places that disagreed on the count. The
-  majority was wrong, and every project scaffolded from those instructions
-  started incomplete.
-- A factual error that survived in five different files for weeks because a
-  correction pass only checked three of them and recorded "all corrected".
+- `folder-architecture.md` existed in **three** copies — a project, a shared guides folder,
+  and this directory — 78 identical lines, all three tracked, all three divergent, with
+  the workspace routing table pointing at the *least* edited one.
+- The file set was defined in three places that disagreed on whether it was 8 files or
+  9. The majority was wrong, and every project scaffolded from those skills started
+  incomplete.
+- A factual error survived in **five** files for 25 days because the correction pass
+  enumerated three of them and recorded "all three corrected".
 
 A pointer is the cure, not the disease. What must never be duplicated is the
 *definition*.
 
 ### Citing outside this directory
 
-Two fields are commonly defined by an external convention rather than by this
-spec:
+Two fields are defined elsewhere on purpose:
 
-- `visibility:`, `authority:`, `as_of:` — if you run a knowledge-base or wiki
-  framework alongside MWP, define these there and have MWP cite that definition
-  rather than restating it.
-- `status:` — the Architectural Decision Record vocabulary, an external
-  convention that predates this framework.
+- `visibility:`, `authority:`, `as_of:` — your knowledge-base framework's spec, if you run
+  one (see `metadata.md`). MWP cites them; it does not define them.
+- `status:` — the Architectural Decision Record vocabulary, an external convention.
 
-`status:` is deliberately **not** shared with a knowledge-base's own content-trust
-vocabulary (if you have one, e.g. `current | draft | stale`, answering "is this
-content trustworthy"). MWP documents answer a different question — "does this
-thing exist yet". Same field name, different axis if both exist in your setup —
-worth recording in both places so it does not get "harmonised" later.
+`status:` is deliberately **not** shared with the KB spec, which uses
+`current | draft | stale` to answer "is this content trustworthy". MWP documents
+answer "does this thing exist yet". Same field name, different axis — recorded in
+both specs so it does not get "harmonised" later.
 
 ---
 
@@ -76,11 +68,10 @@ worth recording in both places so it does not get "harmonised" later.
 1. Change it **here** first. A skill or guide changed ahead of the spec is a fork.
 2. Update [../conformance/checklist.md](../conformance/checklist.md) in the same
    change, or the rule is unenforceable and will decay.
-3. Sweep for existing violations with plain `grep -rn`. **Not** ripgrep or an
-   editor's built-in search tool if it honours `.gitignore` — either can silently
-   skip a nested project repo. A sweep that cannot see a project will report it
-   compliant.
+3. Sweep for existing violations with plain `grep -rn`. **Not** ripgrep or the Grep
+   tool — both honour `.gitignore` and silently skip every nested project repo in
+   this workspace. A sweep that cannot see a project will report it compliant.
 4. Fix what the sweep returns, not what you listed before running it.
 
-Step 4 is the one that most often fails in practice. Verifying against a list you
-wrote yourself confirms only that you fixed your list.
+Step 4 is the one that has failed. Verifying against a list you wrote yourself
+confirms only that you fixed your list.

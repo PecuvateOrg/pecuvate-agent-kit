@@ -4,7 +4,7 @@ Routing config for the MWP skills. Defines what to load and what conventions to 
 
 ## Priority Rule
 
-MWP structural principles (see [CONTEXT.md](./CONTEXT.md)) always take precedence. This file governs **content** — what goes inside a valid MWP structure. It never governs structure itself: workspace count, CLAUDE.md length, routing table format, or token management rules are always determined by the MWP spec, not by project type.
+MWP structural principles (see [CONTEXT.md](./CONTEXT.md)) always take precedence. This file governs **content** — what goes inside a valid MWP structure. It never governs structure itself: workspace count, AGENTS.md length, routing table format, or token management rules are always determined by the MWP spec, not by project type.
 
 ---
 
@@ -165,7 +165,7 @@ child repos) is the reference shape.
 - `~/.claude/mwp-spec/spec/layers.md` — workspace vs root CONTEXT.md
 
 **Structural defaults:**
-- 7-file root: `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `CONTEXT.md`, `DEVLOG.md`, `memory.md`, `brand-identity.md`
+- 6-file root: `AGENTS.md`, `NON-NEGOTIABLES.md`, `CONTEXT.md`, `DEVLOG.md`, `memory.md`, `brand-identity.md`
 - Omits `README.md`, `agent-roles.md`, `skills.md` — leaf-project files; a hub has no roles or skills of its own
 - No `src/`, `planning/`, `ops/` or `netlify.toml`
 - The hub repository is always **private**

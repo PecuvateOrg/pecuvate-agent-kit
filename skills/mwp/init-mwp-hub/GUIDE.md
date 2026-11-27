@@ -29,9 +29,8 @@ have.
 
 | File | Hub | Leaf | Why |
 |---|:--:|:--:|---|
-| `CLAUDE.md` | ✅ | ✅ | Layer 0 routing |
-| `AGENTS.md` | ✅ | ✅ | cross-model adapter |
-| `GEMINI.md` | ✅ | ✅ | cross-model adapter |
+| `AGENTS.md` | ✅ | ✅ | Layer 0 routing |
+| `NON-NEGOTIABLES.md` | ✅ | ✅ | project-wide rules |
 | `CONTEXT.md` | ✅ | ✅ | Layer 1 |
 | `DEVLOG.md` | ✅ | ✅ | decisions |
 | `memory.md` | ✅ | ✅ | state |
@@ -107,7 +106,7 @@ hub's own `DEVLOG.md` stays hub-level and does not grow.
 
 | Layer | Mechanism | Fails if... |
 |---|---|---|
-| Routing | child `CLAUDE.md` declares the location | an agent does not read it |
+| Routing | child `AGENTS.md` declares the location | an agent does not read it |
 | Resolution | your closeout process (if you have one) resolves the path | the process is not updated |
 | Enforcement | child `.gitignore` + CI check | — |
 
@@ -144,10 +143,10 @@ never applies to a tracked path, so recreating `DEVLOG.md` before the removal is
 committed reports *not ignored* even when the rule is correct. Between the move
 and the merged PR the public repo has no enforcement at all.
 
-**The routing layer is more than `CLAUDE.md`.** `AGENTS.md` and `GEMINI.md`
-typically say "then read `CONTEXT.md`, `memory.md` and `DEVLOG.md`". Leave them
+**The routing layer is more than `AGENTS.md`'s task table.** `AGENTS.md`'s first-read line
+and facts typically say "then read `CONTEXT.md`, `memory.md` and `DEVLOG.md`". Leave them
 and every non-Claude agent is told to recreate exactly what was just removed.
-Grep the whole repo for both filenames — `CONTEXT.md` file trees and ops runbooks
+Grep the whole repo for both filenames (`DEVLOG.md`, `memory.md`) — `CONTEXT.md` file trees and ops runbooks
 carry them too.
 
 **Git cannot re-include a file under an excluded directory.** `Child/` followed
@@ -178,7 +177,7 @@ check that never runs seals the branch permanently.
 
 - `/init-mwp` — router; hands off here when the type is Product Hub
 - `/audit-mwp` — checks an existing hub against this structure
-- If your workspace has a closeout process, it must resolve devlog paths via the child's `CLAUDE.md`
+- If your workspace has a closeout process, it must resolve devlog paths via the child's `AGENTS.md`
 - If your workspace has its own public-repo-collaboration conventions doc, follow it — it should cover why public children need the split
 - If your workspace has its own agent-security conventions doc, follow it for credential handling
 - `~/.claude/mwp-spec/spec/layers.md` — workspace vs root CONTEXT.md

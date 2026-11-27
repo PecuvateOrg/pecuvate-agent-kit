@@ -1,6 +1,6 @@
 # init-mwp-automation — Scaffold MWP structure for an automation or workflow project
 
-Sets up the full 9-file MWP root (CLAUDE.md, AGENTS.md, GEMINI.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, README.md) plus workspace CONTEXT.md files for a Node.js automation, integration, or workflow project following the MWP framework.
+Sets up the full 8-file MWP root (AGENTS.md, NON-NEGOTIABLES.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, README.md) plus workspace CONTEXT.md files for a Node.js automation, integration, or workflow project following the MWP framework.
 
 ---
 
@@ -33,7 +33,7 @@ Scaffolds the three-workspace structure (src, integrations, workflows) and gener
 
 ```
 root/
-├── CLAUDE.md
+├── AGENTS.md
 ├── AGENTS.md
 ├── CONTEXT.md
 ├── DEVLOG.md

@@ -1,6 +1,6 @@
 # init-mwp-tool — Scaffold MWP structure for a skill or developer tool project
 
-Sets up the full 9-file MWP root (CLAUDE.md, AGENTS.md, GEMINI.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, README.md) plus workspace CONTEXT.md files for a Claude Code skill or developer tool project following the MWP framework.
+Sets up the full 8-file MWP root (AGENTS.md, NON-NEGOTIABLES.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, README.md) plus workspace CONTEXT.md files for a Claude Code skill or developer tool project following the MWP framework.
 
 ---
 
@@ -32,7 +32,7 @@ Scaffolds the three-workspace structure (spec, skills, templates) and generates 
 
 ```
 root/
-├── CLAUDE.md
+├── AGENTS.md
 ├── AGENTS.md
 ├── CONTEXT.md
 ├── DEVLOG.md
@@ -69,12 +69,12 @@ Note: root `skills.md` (this project's catalog of its own slash commands, per MW
 | Type | Format |
 |---|---|
 | Skill files | kebab-case (e.g. `my-skill.md`) |
-| Template files | `filename.template` (e.g. `CLAUDE.md.template`) |
+| Template files | `filename.template` (e.g. `AGENTS.md.template`) |
 | Deploy target | `~/.claude/skills/[skill-name]/` (or your workspace's own skill source directory, if it deploys skills from a central location first) |
 
 ---
 
-## CLAUDE.md for Tool Projects
+## AGENTS.md for Tool Projects
 
 Include the deploy path in the Naming Conventions section so it is always clear where skill files should be registered. Each skill should be focused on one command — no combined logic in a single skill file.
 
@@ -86,5 +86,5 @@ Include the deploy path in the Naming Conventions section so it is always clear 
 |---|---|
 | Skill not appearing in Claude Code | Check it was deployed to `~/.claude/skills/` (or `%USERPROFILE%\.claude\skills\` on Windows). If your workspace syncs skills from a central source directory, re-run that sync process |
 | Template generating wrong output | Check the template file and compare against `templates/CONTEXT.md` |
-| Spec being loaded unnecessarily | `spec/` files should only be loaded when a skill explicitly needs them — add Token Management rules |
+| Spec being loaded unnecessarily | `spec/` files should only be loaded when a skill explicitly needs them — route to them only from the task table rows that need them |
 | README.md / root CONTEXT.md / DEVLOG.md / root skills.md missing | These are required root files per `~/.claude/mwp-spec/spec/file-set.md` — generate them at scaffold time |

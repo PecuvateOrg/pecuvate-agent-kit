@@ -1,5 +1,5 @@
 # [PROJECT NAME] — Non-Negotiables
-<!-- This file is forced open every session by CLAUDE.md's Self-Reference line.
+<!-- This file is forced open every session by AGENTS.md's first-read line.
      It is not on-demand like ordinary reference material — see spec/layers.md §
      NON-NEGOTIABLES.md for why. Keep everything here true regardless of task type;
      anything conditional on a specific workspace belongs in that workspace's
