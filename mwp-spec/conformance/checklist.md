@@ -147,8 +147,7 @@ project's own code (`process.env.X`, `import.meta.env.X`, `Deno.env.get`), or a 
   on a fixture string — firing on the secrets tooling's own test suite.
 
 **Promotion to FAIL.** These ship at WARN. Measured 2026-09-21: **15 of 27 projects
-consume credentials, 3 declare, 12 are silent** — so this fires on 12 real projects,
-and the backfill list is named in `plans/mwp-credential-source-declaration.md`.
+consume credentials, 3 declare, 12 are silent** — so this fired on 12 real projects in the reference estate.
 Promote to FAIL only after the backfill, and only after confirming the WARN pass
 returned no false positives. **Precedent:** the `skills-health` "referenced scripts
 exist" check returned 9 hits on its first cut, **6 of them wrong** — a check that is
