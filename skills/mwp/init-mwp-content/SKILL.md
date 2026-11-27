@@ -1,6 +1,6 @@
 ---
 name: init-mwp-content
-description: Scaffold an MWP project structure for a content creator project. Invoked by init-mwp when the project type is matched, or directly via /init-mwp-content. Sets up the full 9-file MWP root (CLAUDE.md, AGENTS.md, GEMINI.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, README.md) plus workspace CONTEXT.md files for a content production workflow.
+description: Scaffold an MWP project structure for a content creator project. Invoked by init-mwp when the project type is matched, or directly via /init-mwp-content. Sets up the full 8-file MWP root (AGENTS.md, NON-NEGOTIABLES.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, README.md) plus workspace CONTEXT.md files for a content production workflow.
 ---
 
 **Before doing anything else:** confirm `~/.claude/mwp-spec/spec/CONTEXT.md` is readable. If it is not, stop and tell the user to finish the spec-install step in this repo's INSTALL.md — do not improvise MWP structure from memory.
@@ -13,7 +13,7 @@ Scaffold an MWP project structure for a content creator project.
 
 ```
 root/
-├── CLAUDE.md
+├── AGENTS.md
 ├── AGENTS.md
 ├── CONTEXT.md
 ├── DEVLOG.md
@@ -50,9 +50,7 @@ Root contains MWP files only. Ideas and drafts in script-lab/, content productio
 4. **Present the scaffold.** Show the canonical structure above. Ask: "Does this structure fit, or do you need any workspaces adjusted?"
 
 5. **Generate files** using `~/.claude/mwp-spec/templates/`:
-   - **CLAUDE.md** — Identity, Self-Reference, Routing Table, Cross-Workspace Flows, Naming Conventions, File Placement, Token Management
-   - **AGENTS.md** — Lightweight cross-model adapter pointing to CLAUDE.md
-   - **GEMINI.md** — Same content as AGENTS.md, per `~/.claude/mwp-spec/templates/GEMINI.md.template`. Verify with `diff AGENTS.md GEMINI.md` — it must be empty
+   - **AGENTS.md** — three-part body from `~/.claude/mwp-spec/templates/AGENTS.md.template`: identity + first-read line, task table, facts. Naming conventions and file-placement rules go in NON-NEGOTIABLES.md
    - **CONTEXT.md** — what the content project produces, workspace map, audience, known quirks
    - **DEVLOG.md** — single entry dated today: "Project scaffolded via /init-mwp-content"
    - **agent-roles.md** — Agent roles, capabilities, boundaries, inputs/outputs, and handoffs
@@ -74,8 +72,7 @@ the same duplication put the workspace-shapes document in three divergent places
 ## Rules
 - If invoked from an orchestration skill in your own setup with pre-gathered context (content type, audience, platforms, production process, workspaces confirmed), skip Step 3 and use that context directly for Steps 4–6.
 - MWP structural principles always take priority.
-- Root contains only CLAUDE.md, AGENTS.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, and README.md.
-- Generated CLAUDE.md must include all seven MWP components.
-- Generated AGENTS.md must stay a small adapter pointing to CLAUDE.md.
+- Root contains only AGENTS.md, NON-NEGOTIABLES.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, and README.md.
+- Generated AGENTS.md has the three parts (identity + first-read line, task table, facts). No CLAUDE.md or GEMINI.md is created.
 - Generated agent-roles.md must use the role-registry template.
 - script-lab/CONTEXT.md must describe the user's voice and audience — without this, content output will be generic.

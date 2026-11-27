@@ -1,6 +1,6 @@
 # init-mwp-content — Scaffold MWP structure for a content creator project
 
-Sets up the full 9-file MWP root (CLAUDE.md, AGENTS.md, GEMINI.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, README.md) plus workspace CONTEXT.md files for a content production workflow following the MWP framework.
+Sets up the full 8-file MWP root (AGENTS.md, NON-NEGOTIABLES.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, README.md) plus workspace CONTEXT.md files for a content production workflow following the MWP framework.
 
 ---
 
@@ -33,7 +33,7 @@ Scaffolds the three-workspace structure (script-lab, production, distribution) a
 
 ```
 root/
-├── CLAUDE.md
+├── AGENTS.md
 ├── AGENTS.md
 ├── CONTEXT.md
 ├── DEVLOG.md

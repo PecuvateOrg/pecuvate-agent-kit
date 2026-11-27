@@ -8,7 +8,7 @@ Normative. Part of the MWP standard — see [CONTEXT.md](./CONTEXT.md).
 
 ## The Principle
 
-The layers do not change. The labels do. Your CLAUDE.md still sits at the top and routes everything. Each workspace still has its own context file. Skills still plug in where needed. But what each workspace is called, what the context files say, and what skills are wired in will look completely different depending on what you actually do.
+The layers do not change. The labels do. Your AGENTS.md still sits at the top and routes everything. Each workspace still has its own context file. Skills still plug in where needed. But what each workspace is called, what the context files say, and what skills are wired in will look completely different depending on what you actually do.
 
 ---
 
@@ -16,7 +16,7 @@ The layers do not change. The labels do. Your CLAUDE.md still sits at the top an
 
 ```
 my-content-project/
-├── CLAUDE.md
+├── AGENTS.md
 ├── script-lab/
 │   ├── CONTEXT.md
 │   ├── ideas/
@@ -64,7 +64,7 @@ I create [TYPE OF CONTENT] for [AUDIENCE].
 
 ```
 my-consulting-practice/
-├── CLAUDE.md
+├── AGENTS.md
 ├── client-alpha/
 │   ├── CONTEXT.md
 │   ├── intake/
@@ -117,7 +117,7 @@ I am a [TYPE] consultant working with [TYPES OF CLIENTS].
 
 ```
 my-app/
-├── CLAUDE.md
+├── AGENTS.md
 ├── planning/
 │   ├── CONTEXT.md
 │   ├── specs/
@@ -183,7 +183,7 @@ Note the Skills column in the routing table. Wire skills into specific workspace
 
 **Step 2 — Write a CONTEXT.md for each one.** Describe what happens in this workspace, the process, what files live here, and what good work looks like. Keep it under a page. Add more later.
 
-**Step 3 — Write your CLAUDE.md.** List the workspaces, build the routing table, add naming conventions.
+**Step 3 — Write your AGENTS.md.** List the workspaces, build the routing table, add naming conventions.
 
 **Step 4 — Start working.** Point Claude at the folder, give it a task, see what happens. Adjust context files based on what Claude gets right and what it gets wrong. The first version will not be perfect. It will be better than no structure at all, and it will improve every time you edit a context file.
 

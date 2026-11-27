@@ -1,11 +1,19 @@
-# Agent Instructions
+# [PROJECT NAME]
 
-Read `CLAUDE.md` first. It is the canonical MWP Layer 0 file for this project and contains the routing table, project-wide rules, deployment metadata, and token-management instructions.
+[One line: what this project is.]
 
-Then read these files when present and relevant:
+Read `NON-NEGOTIABLES.md` before doing anything; read `memory.md` at session start.
 
-1. `CONTEXT.md` for project orientation
-2. `memory.md` for current state
-3. `DEVLOG.md` for recent session history
+<!-- spec/layers.md § What AGENTS.md Contains. Keep only lines that change what the agent does.
+     Drop the memory.md part if the project has none. No CLAUDE.md: Claude Code reads this file. -->
 
-These instructions are agent-generic unless a section is explicitly marked Claude-only.
+## Where things go
+
+| Task | Read |
+|---|---|
+| [Task, or "new X file"] | [path/CONTEXT.md] |
+
+## Facts
+
+- Deploy: [platform; does a push to main deploy?]
+- Before changing something, read `gotchas.md`. Settled choices: `decisions.md`.

@@ -16,7 +16,7 @@ Ambiguous agent scope leads to agents overreaching, duplicating work, or leaving
 
 ## Shared Roles
 
-If you maintain a cross-project shared-roles registry (recurring roles like a deploy agent, a health auditor, etc. that are common to several projects), link to it here and reference those roles by name — do not redefine them here. Otherwise, remove this section. Define only roles local to this project inline below.
+Workspace-wide recurring roles (deploy-agent, health-auditor, kb-librarian, etc.) are defined in your workspace's fleet registry, if you keep one. Reference those roles by name — do not redefine them here. Define only roles local to this project inline below.
 
 ---
 

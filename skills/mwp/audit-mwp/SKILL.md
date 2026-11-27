@@ -1,6 +1,6 @@
 ---
 name: audit-mwp
-description: Audit an existing project's MWP structure against the framework principles. Use whenever a user wants to check if their project follows MWP correctly, review their CLAUDE.md, AGENTS.md, agent-roles.md, CONTEXT.md, or memory.md files for compliance, or says /audit-mwp. Trigger even if the user says "is this set up right?" or "check my MWP files".
+description: Audit an existing project's MWP structure against the framework principles. Use whenever a user wants to check if their project follows MWP correctly, review their AGENTS.md, NON-NEGOTIABLES.md, agent-roles.md, CONTEXT.md, or memory.md files for compliance, or says /audit-mwp. Trigger even if the user says "is this set up right?" or "check my MWP files".
 ---
 
 **Before doing anything else:** confirm `~/.claude/mwp-spec/spec/CONTEXT.md` is readable. If it is not, stop and tell the user to finish the spec-install step in this repo's INSTALL.md — do not improvise MWP structure from memory.
@@ -12,7 +12,7 @@ Audit an existing project's MWP structure against the framework principles.
 ## Steps
 
 1. **Read the following files** if they exist:
-   - CLAUDE.md
+   - AGENTS.md
    - AGENTS.md
    - agent-roles.md
    - memory.md
@@ -31,7 +31,7 @@ Audit an existing project's MWP structure against the framework principles.
    Load a `spec/` file only when a check needs its detail — start at `~/.claude/mwp-spec/spec/CONTEXT.md`.
 
 3. **Run the checklist's checks.** Every mechanical check — file presence, casing,
-   the 8 `CLAUDE.md` components, ceilings, metadata, public-repo controls — is defined
+   the three `AGENTS.md` parts, ceilings, metadata, public-repo controls — is defined
    in `checklist.md` with its id, measurement and severity.
 
    **Do not restate them here.** This skill cites ids; it does not define checks. A
@@ -39,19 +39,21 @@ Audit an existing project's MWP structure against the framework principles.
    skills numbering their own checks is what produced an id collision this
    framework had to unpick. See `no-check-defined-outside-checklist`.
 
-   Report findings by slug, e.g. `leaf-file-set`, `adapter-casing`, `claude-md-ceiling`.
+   Report findings by slug, e.g. `leaf-file-set`, `adapter-casing`, `agents-canonical`.
 
 4. **Then apply judgement.** The checklist covers what can be measured. This skill's
    distinct value is the part that cannot be — read
    `~/.claude/mwp-spec/conformance/common-mistakes.md`, then assess:
 
-   **CLAUDE.md** — Is the routing table *complete*: does every task type someone
+   **AGENTS.md** — Is the routing table *complete*: does every task type someone
    actually performs have a row, and does every row point somewhere that exists? Does
    the file contain anything that belongs in a directory `CONTEXT.md` instead?
 
-   **Directory CONTEXT.md files** — Does each describe purpose, process,
-   inputs/outputs, tools and constraints? Is each scoped to its own directory, with no
-   content that belongs to a sibling?
+   **Directory CONTEXT.md files** — Does each open with one line saying what the folder
+   is for, then carry only the sections that apply (routing, process, rules, plug-in
+   points)? Is it free of status, progress and folder trees (those belong in `memory.md`,
+   `tasks.md`, or nowhere)? Is each scoped to its own directory, with no content that
+   belongs to a sibling?
 
    **memory.md** — Does it reflect current project state, or has it gone stale? Does
    it hold only what *cannot* be derived by reading the files — no architecture, no
@@ -60,8 +62,8 @@ Audit an existing project's MWP structure against the framework principles.
    **Structure** — Are reference files in a dedicated directory rather than loose at
    root? Are archive and historical files excluded from active loading?
 
-   **AGENTS.md / agent-roles.md** — Is `AGENTS.md` a lightweight adapter pointing at
-   `CLAUDE.md`, or has it accumulated duplicated routing? Where `agent-roles.md`
+   **AGENTS.md / agent-roles.md** — Does `AGENTS.md` have its three parts, with no
+   `CLAUDE.md` beside it? Where `agent-roles.md`
    exists, is it confined to roles, capabilities, boundaries, inputs/outputs and
    handoffs?
 

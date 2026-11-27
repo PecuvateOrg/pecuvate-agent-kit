@@ -24,15 +24,15 @@ Update MWP structure files when a project changes.
 3. **Load spec/CONTEXT.md** from `~/.claude/mwp-spec/spec/CONTEXT.md` if the change involves structural decisions.
 
 4. **Update only the files that need changing.** For each change:
-   - New workspace → create [workspace]/CONTEXT.md, add a row to the routing table in CLAUDE.md, add a Token Management rule if needed
-   - Removed workspace → remove the folder reference from CLAUDE.md routing table, remove associated Token Management rules
+   - New workspace → create [workspace]/CONTEXT.md, add a row to the routing table in AGENTS.md
+   - Removed workspace → remove the folder reference from AGENTS.md routing table
    - Changed tools or integrations → update the relevant workspace CONTEXT.md and the Skills column in the routing table
-   - Changed naming conventions → update CLAUDE.md Naming Conventions section
-   - Changed cross-workspace flow → update CLAUDE.md Cross-Workspace Flows section
+   - Changed naming conventions → update NON-NEGOTIABLES.md Naming Conventions
+   - Changed cross-workspace flow → update the AGENTS.md row that names the other project
 
 5. **Update memory.md** to reflect the change and current project state.
 
-6. **Ensure AGENTS.md exists as an adapter.** It should point to CLAUDE.md; do not mirror routing changes into it unless the user explicitly asks.
+6. **AGENTS.md is the only Layer 0 file.** If a `CLAUDE.md` exists beside it, move anything unique into `AGENTS.md` and delete it: Claude Code reads `AGENTS.md` itself, and a `CLAUDE.md` would replace it.
 
 7. **Report what was changed** — list every file modified and what changed in it.
 

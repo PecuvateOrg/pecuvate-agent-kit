@@ -1,6 +1,6 @@
 ---
 name: init-mwp-automation
-description: Scaffold an MWP project structure for an automation, workflow, or integration project. Invoked by init-mwp when the project type is matched, or directly via /init-mwp-automation. Sets up the full 9-file MWP root (CLAUDE.md, AGENTS.md, GEMINI.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, README.md) plus workspace CONTEXT.md files for a Node.js automation project.
+description: Scaffold an MWP project structure for an automation, workflow, or integration project. Invoked by init-mwp when the project type is matched, or directly via /init-mwp-automation. Sets up the full 8-file MWP root (AGENTS.md, NON-NEGOTIABLES.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, README.md) plus workspace CONTEXT.md files for a Node.js automation project.
 ---
 
 **Before doing anything else:** confirm `~/.claude/mwp-spec/spec/CONTEXT.md` is readable. If it is not, stop and tell the user to finish the spec-install step in this repo's INSTALL.md — do not improvise MWP structure from memory.
@@ -13,7 +13,7 @@ Scaffold an MWP project structure for an automation, workflow, or integration pr
 
 ```
 root/
-├── CLAUDE.md
+├── AGENTS.md
 ├── AGENTS.md
 ├── CONTEXT.md
 ├── DEVLOG.md
@@ -40,7 +40,7 @@ Root contains MWP files only. Core logic lives in src/. Each external service ge
    - Environment — never commit secrets; use `.env.local` plus `.gitignore`, never hardcode credentials
    - `~/.claude/mwp-spec/spec/file-set.md` — the required root file set (normative)
    - `~/.claude/mwp-spec/templates/` — the starting body for every file in that set
-   - Documentation — at minimum a README plus a CLAUDE.md/AGENTS.md per this spec's file-set rules; workspace practice only, for when to update each file once it exists
+   - Documentation — at minimum a README plus an AGENTS.md per this spec's file-set rules; workspace practice only, for when to update each file once it exists
 
 3. **Ask the user** (ask all at once):
    - What does this automation do? (one sentence)
@@ -52,9 +52,7 @@ Root contains MWP files only. Core logic lives in src/. Each external service ge
 4. **Present the scaffold.** Show the canonical structure above. Ask: "Does this structure fit, or do you need any workspaces adjusted?"
 
 5. **Generate files** using `~/.claude/mwp-spec/templates/`:
-   - **CLAUDE.md** — Identity, Self-Reference, Routing Table, Cross-Workspace Flows, Naming Conventions, File Placement, Token Management
-   - **AGENTS.md** — Lightweight cross-model adapter pointing to CLAUDE.md
-   - **GEMINI.md** — Same content as AGENTS.md, per `~/.claude/mwp-spec/templates/GEMINI.md.template`. Verify with `diff AGENTS.md GEMINI.md` — it must be empty
+   - **AGENTS.md** — three-part body from `~/.claude/mwp-spec/templates/AGENTS.md.template`: identity + first-read line, task table, facts. Naming conventions and file-placement rules go in NON-NEGOTIABLES.md
    - **CONTEXT.md** — what the automation does, workspace map, external services, known quirks
    - **DEVLOG.md** — single entry dated today: "Project scaffolded via /init-mwp-automation"
    - **agent-roles.md** — Agent roles, capabilities, boundaries, inputs/outputs, and handoffs
@@ -76,8 +74,7 @@ Root contains MWP files only. Core logic lives in src/. Each external service ge
 ## Rules
 - If invoked from an orchestration skill in your own setup with pre-gathered context (name, description, triggers, integrations, workspaces confirmed), skip Step 3 and use that context directly for Steps 4–6.
 - MWP structural principles always take priority.
-- Root contains only CLAUDE.md, AGENTS.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, and README.md.
+- Root contains only AGENTS.md, NON-NEGOTIABLES.md, CONTEXT.md, DEVLOG.md, agent-roles.md, skills.md, memory.md, and README.md.
 - Each external service gets its own subfolder inside integrations/ — no bleed between services.
-- Generated CLAUDE.md must include all seven MWP components.
-- Generated AGENTS.md must stay a small adapter pointing to CLAUDE.md.
+- Generated AGENTS.md has the three parts (identity + first-read line, task table, facts). No CLAUDE.md or GEMINI.md is created.
 - Generated agent-roles.md must use the role-registry template.

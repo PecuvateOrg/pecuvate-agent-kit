@@ -13,10 +13,10 @@ what the current task requires. No agent reads everything.
 
 | Layer | File / Location | Question it answers | Approx. size |
 |---|---|---|---|
-| **0** | `CLAUDE.md` | Where am I? What are the rules? | ~800 tokens |
+| **0** | `AGENTS.md` | Where am I? What are the rules? | ~800 tokens |
 | **1** | `CONTEXT.md` (project root) | Where do I go? What does this project contain? | ~300 tokens |
 | **2** | `stages/NN_name/CONTEXT.md` | What do I do at this step? | 200–500 tokens |
-| **3** | `_config/`, `references/`, `shared/` | What stable rules and conventions apply? | 500–2k tokens |
+| **3** | `config/`, `references/`, `shared/` | What stable rules and conventions apply? | 500–2k tokens |
 | **4** | `output/`, working files | What am I working with right now? | varies |
 
 ### Layer 3 vs Layer 4
@@ -50,18 +50,65 @@ to its use.
 Not every project has stages. Add Layer 2 only where work genuinely moves through
 ordered steps — a project without a pipeline gains nothing but indirection.
 
+### Load Timing
+
+The table above says Claude "reads them in order" — but layers do not all reach the agent the
+same way. Two channels, not one:
+
+- **Auto-loaded**: the launch directory's own `AGENTS.md` and every ancestor directory's
+  `AGENTS.md` are injected automatically at session start, without the agent choosing to read
+  them.
+- **Read-triggered**: everything else — including a `AGENTS.md` that lives *below* the launch
+  directory — loads only when the agent reads a file there. A mid-session `cd` does **not**
+  inject that directory's `AGENTS.md`; nothing does, until the agent reads something inside it.
+
+**Observed in session, 2026-09-22:** launched at `~/`, two Bash calls returned nothing extra.
+The turn that read a spec file two directories below the
+launch point carried system-reminders injecting **both** the workspace root's and that
+framework folder's Layer 0 file in the same turn: the ancestor chain of the file
+just read, not the launch directory's chain. This confirms the read-triggered half directly,
+rather than from vendor docs.
+
+**Not yet tested: whether starting a session *inside* a project injects that project's own
+`AGENTS.md` at launch.** Inferred yes from the mechanism above (discovery runs cwd-upward at
+startup) — but inferred, not observed. Do not upgrade this to confirmed until a session has
+actually been started inside a project and turn one checked.
+
+#### Consequence: a project file below the launch point is lowest-reliability
+
+Apply the reliability ranking in [agent-behaviour.md](./agent-behaviour.md) to the two channels.
+A workspace launched from a parent directory (the normal case: one session, many projects) puts
+every project's `AGENTS.md` on the **read-triggered** channel. "Read-triggered" means triggered
+by one specific file-read tool, not by whatever the agent touches: shell commands, searches and
+directory changes deliver nothing. An agent that orients through the shell — which agents do
+by default, and which some harness modes actively encourage — therefore never receives the
+project layer at all. In ranking terms, the project `AGENTS.md` has dropped from
+*auto-loaded instruction* to *a document the agent must choose to find*.
+
+**Observed 2026-10-05:** a full session worked inside one project through shell commands only.
+No project or hub `AGENTS.md` arrived; the agent missed the project's routing, a hub "read
+before touching" pointer and a public-repo file-placement rule. The first file-tool read in that
+project delivered both files in the same turn.
+
+**Rule:** the structure is not at fault and must not be duplicated upward to compensate. Close
+the gap at the harness, where MWP places delivery guarantees: a harness that cannot guarantee
+read-triggered loading for every tool needs a hook (or equivalent) that delivers a project's
+`AGENTS.md` chain the first time *any* tool call touches that project, once per session, skipping
+files already auto-loaded at launch. How that is done is machine config, not spec; this
+workspace's implementation is recorded in its own config.
+
 ---
 
-## CLAUDE.md Tokenomics
+## AGENTS.md Tokenomics
 
-**CLAUDE.md is routing — nothing else.** The published paper is explicit about this: its own
+**AGENTS.md is routing — nothing else.** The published paper is explicit about this: its own
 Layer 0 / Layer 3 diagram labels Layer 0 *"Where am I? — Structural (routing)"* and Layer 3
 *"What rules apply? — Content (factory)."* Rules are Layer 3 material, not Layer 0. An earlier
 version of this section merged the two — "routing and project-wide non-negotiables" — which was
 drift from the paper, not a deliberate choice, and is corrected here (2026-09-22). Project-wide
 non-negotiables live in their own file, `NON-NEGOTIABLES.md`, described immediately below.
 
-CLAUDE.md is the only file guaranteed to load on every session. That makes it the highest recurring token cost in the entire system. Every line in it is paid for whether you are working on onboarding, payment, or a dashboard bug fix. This is why its content must be driven by the project's intended outcomes — not by an arbitrary line count.
+AGENTS.md is the only file guaranteed to load on every session. That makes it the highest recurring token cost in the entire system. Every line in it is paid for whether you are working on onboarding, payment, or a dashboard bug fix. This is why its content must be driven by the project's intended outcomes — not by an arbitrary line count.
 
 ### NON-NEGOTIABLES.md
 
@@ -73,18 +120,18 @@ it's relevant. That is precisely the situation a non-negotiable exists to cover 
 nothing about the current task would prompt Claude to go looking.
 
 The fix is not to let Layer 0 carry rules again — it is to force Layer 3's rules file open every
-time, from Layer 0. `NON-NEGOTIABLES.md` sits at the project root, next to `CLAUDE.md` — not
+time, from Layer 0. `NON-NEGOTIABLES.md` sits at the project root, next to `AGENTS.md` — not
 inside a `references/` folder, which would put it back on the on-demand path this exists to
-avoid. `CLAUDE.md`'s Self-Reference line (component 2, below) is the one routing instruction
+avoid. `AGENTS.md`'s "Read `NON-NEGOTIABLES.md`" line (part 1, below), backed by the context-loader hook, is the one routing instruction
 that forces it open: *"read `NON-NEGOTIABLES.md` before doing anything."* That instruction is
 itself routing, not a rule — Layer 0's job is telling Claude where to find things, and this is
 telling Claude where the rules live — so it does not reintroduce rules into Layer 0's content.
 
 **Belongs in `NON-NEGOTIABLES.md`:**
 - Project-wide constraints — true regardless of what task is underway
-- ID & Naming Conventions — moved here from CLAUDE.md; see component 5's replacement, below
+- ID & Naming Conventions — moved here from AGENTS.md; see component 5's replacement, below
 - Anything currently written as "Non-Negotiables," "Constraints," or "Shared Constraints"
-  inside a project's `CLAUDE.md` — that content relocates here, it does not stay
+  inside a project's `AGENTS.md` — that content relocates here, it does not stay
 
 **Does not belong here:** anything conditional on task type. A rule that only applies "when
 working on payments" is workspace-specific and belongs in that workspace's `CONTEXT.md`, exactly
@@ -92,21 +139,44 @@ as before — moving non-negotiables into their own file does not relax that bou
 
 ### Cross-Model Adapters
 
-`CLAUDE.md` remains the canonical MWP Layer 0 file. Existing MWP skills, deployment tools, and audits read it as the source for routing, project-wide rules, deployment metadata, and token-management instructions.
+**`AGENTS.md` is the canonical Layer 0 in every project** (since 2026-11-26). It holds the
+routing and the required first reads. **There is no `CLAUDE.md`** (since 2026-11-26): Claude Code
+reads `AGENTS.md` itself when a folder has no `CLAUDE.md`, from the launch folder, every parent and
+across nested repos (tested 2026-11-26, Claude Code 2.1.325). A `CLAUDE.md` beside it would replace
+it, not add to it. Don't use `@` imports for anything that must load: Claude Code honours `@` only
+in the launch folder's own file. `NON-NEGOTIABLES.md` stays a separate file; Claude Code never
+loads it, so a Claude Code hook (SessionStart plus PostToolUse) should deliver every
+`NON-NEGOTIABLES.md` on the chain at session start and when work enters a project. Other tools
+follow the plain "Read `NON-NEGOTIABLES.md` before doing anything" line. There is
+no `GEMINI.md`: Antigravity reads `AGENTS.md` directly at each folder up to the repository root
+and combines every rule file it finds, so a `GEMINI.md` would only add the same rules twice.
+Keep a `GEMINI.md` only in material shipped to outside users who may run the Gemini CLI.
 
-Every MWP project should include uppercase `AGENTS.md` as a lightweight adapter for Codex-style or generic coding agents. It points to `CLAUDE.md`, then `CONTEXT.md`, `memory.md`, and `DEVLOG.md` when present and relevant. Do not duplicate the full routing table unless a tool specifically requires it; duplicated routing drifts.
+Antigravity stops at the repository root, and Claude Code doesn't load files above a nested
+launch. So each project's `AGENTS.md` names the workspace `NON-NEGOTIABLES.md` explicitly, in a
+one-line note under its title. Antigravity truncates a rule file over 24,000 bytes, so keep
+`AGENTS.md` well under that: move long reference tables into an index file it routes to.
+
+For an `AGENTS.md`-first workspace, the root router explicitly directs the agent to
+the owning project's entry file before project work. Verify from both the workspace
+root and the project root. A shell handoff should surface the canonical file and its
+required rules before any bulk output.
+
+A project that still has a `CLAUDE.md` is unmigrated. Move anything it holds that
+`AGENTS.md` lacks into `AGENTS.md`, then delete `AGENTS.md`. Audit and tooling read
+`AGENTS.md` for routing and metadata.
 
 `agent-roles.md` is different: it is the MWP role registry for agent roles, capabilities, boundaries, inputs/outputs, and handoffs. It is not the cross-model entrypoint. Do not use lowercase `agents.md` for this role because it collides with uppercase `AGENTS.md` on case-insensitive filesystems.
 
 ### The Right Question
 
-The question is not "how short can I make this?" It is: **what does this project require CLAUDE.md to contain in order to achieve its intended outcomes?**
+The question is not "how short can I make this?" It is: **what does this project require AGENTS.md to contain in order to achieve its intended outcomes?**
 
 Length is a consequence of that answer, not a target. A simple project may need 20 lines. A complex multi-system project with distinct task types, compliance constraints, and multiple external integrations may legitimately need 70–80 lines or more. Capping both at the same number produces either a bloated simple file or an inadequate complex one. Neither serves the ultimate aim.
 
 ### How Claude Actually Navigates
 
-Before defining what CLAUDE.md contains, it is worth understanding how Claude actually uses it — because this changes what needs to be in it.
+Before defining what AGENTS.md contains, it is worth understanding how Claude actually uses it — because this changes what needs to be in it.
 
 Claude does not navigate a project the way a human does. A human scans a folder tree visually and builds a mental map. Claude does not scan. It reads what it is told to read. When given a task, it matches the task against the routing table and goes directly to the specified workspace. It does not browse. It does not explore.
 
@@ -114,69 +184,50 @@ The analogy is parsing. A parser does not read the entire document to find a var
 
 This has one important implication: **Claude does not need a folder structure.** A folder structure is a visual aid for humans. Claude needs to know where to go for a given task — that is the routing table's job. It needs to know what not to load — that is Token Management's job. Workspace internals are described in each workspace CONTEXT.md when Claude enters it. A folder structure adds no meaningful guidance toward the ultimate aim and costs tokens on every session to serve a human need, not Claude's.
 
-A folder structure in CLAUDE.md is a symptom of an incomplete routing table. The correct fix is a more complete routing table — not a folder structure as a fallback.
+A folder structure in AGENTS.md is a symptom of an incomplete routing table. The correct fix is a more complete routing table — not a folder structure as a fallback.
 
-### What CLAUDE.md Contains
+### What AGENTS.md Contains
 
-A complete CLAUDE.md has seven components. Each earns its place by serving routing — nothing
-else. A component that states a constraint rather than pointing somewhere does not belong here;
-see `NON-NEGOTIABLES.md`, above.
+Three parts, in this order. Every line must change what the agent does; anything the spec,
+the parent files or the tool already says is left out. (Changed 2026-11-26 from seven
+components — Self-Reference, Token Management, Skills and Session Start blocks were the same
+text in 30+ files and the skill tables went stale.)
 
-**1. Identity**
-One to two lines. What this project is and what it does. Enough for Claude to confirm it is in the right project — not enough to describe the system in detail.
+**1. Identity and first reads**
+One line saying what the project is. Then one plain line: "Read `NON-NEGOTIABLES.md` before doing
+anything; read `memory.md` at session start." (drop the part for a file the project lacks). No
+`@` imports: they load only from the launch folder's file. Where a hook delivers
+`NON-NEGOTIABLES.md` anyway, the line serves every other tool. Do not restate parent rules: every
+tool loads the parent folders' `AGENTS.md`.
 
-**2. Self-Reference**
-Two sentences: what this file is, and the forced pointer to the rules file. Canonical wording:
-"This file is Layer 0 — routing only. Read `NON-NEGOTIABLES.md` before doing anything; project
-detail lives in `CONTEXT.md`." The first sentence prevents Claude from treating CLAUDE.md as a
-source of workspace-level detail. The second is the routing instruction that makes
-`NON-NEGOTIABLES.md` reliable despite being ordinary on-demand Layer 3 material everywhere else
-in the system — see above.
+**2. Where things go**
+One table, task → file to read first. It also covers where new files go (a "new X" row) and
+cross-project flows (a row naming the other project). Merge rows that point to the same file.
+If a file is not reachable from this table, add it or delete it. Only add a "do not load" line
+for a real heavy or misleading folder in this project (an archive, a vendored tree).
 
-**3. Routing Table**
-The core of the file. Maps every task type to a workspace, the context file to read first, and the tools to load. This is positive routing — where to go. Every row must represent a genuinely distinct task type. Rows that point to the same workspace for similar tasks should be merged. If a file or resource isn't reachable via the routing table, it should either be added or it shouldn't exist.
-
-**4. Cross-Workspace Flows**
-Tasks that span multiple workspaces in sequence. The routing table handles single-workspace tasks. This section handles flows where Claude must move across workspaces to complete one piece of work. Without this, Claude has no guidance for multi-workspace tasks and will either guess or ask.
-
-**5. File Placement Rules**
-Where new files go — a lookup table shaped exactly like the Routing Table, just in the other
-direction (file type → folder, instead of task type → workspace), and triggered the same way:
-only when Claude is about to create a file. That conditional trigger is what keeps it in
-CLAUDE.md rather than `NON-NEGOTIABLES.md` — it is not a rule that applies regardless of the
-task, it is routing for the specific moment a file gets created. Without it, files accumulate in
-wrong locations and the structure degrades.
-
-**6. Token Management**
-The most commonly missed section and the most important for tokenomics. This section tells Claude what **not** to load. The routing table is positive routing. Token Management is negative routing — explicit instructions to skip files, folders, or sections that are not relevant to the current task.
-
-Without this section, Claude defaults to reading everything in scope to orient itself. A well-written Token Management section prevents that default and is the direct implementation of the tradeoff principle from section 3.
-
-Example instructions this section might contain:
-- Do not read archive files unless explicitly asked
-- Do not load reference guides unless the task involves that integration
-- Do not read historical files unless working in a workspace that requires them
-
-**7. Skills and Tools Available**
-A reference list of what MCPs, skills, and slash commands are wired into this project. Prevents Claude from attempting tasks without the right tools or failing to use tools that are already available.
+**3. Facts**
+Short bullets an agent would otherwise get wrong: how it deploys (and if a push deploys),
+the hosting and database it uses, and pointers to `gotchas.md` / `decisions.md`. No skill
+tables — the tool lists skills itself; name a skill only inside the row it belongs to.
 
 ### What Gets Pushed Out
 
 Importance is not the test. **Scope is the test.**
 
-| Belongs in CLAUDE.md | Push to workspace CONTEXT.md |
-|---|---|
-| Routing table | Process steps and flows |
-| Project identity (1–2 lines) | System descriptions and status |
-| Constraints that apply everywhere | Constraints specific to one stage |
-| Project-wide naming conventions | Workspace-specific field names |
-| Cross-workspace flows | Single-workspace process steps |
-| Token Management (what not to load) | Workspace-specific loading rules |
-| Folder structure | Removed — routing table replaces it |
+| Belongs in AGENTS.md | Belongs in NON-NEGOTIABLES.md | Push to workspace CONTEXT.md |
+|---|---|---|
+| Routing table | — | Process steps and flows |
+| Project identity (1–2 lines) | — | System descriptions and status |
+| — | Constraints that apply everywhere | Constraints specific to one stage |
+| — | Project-wide naming conventions | Workspace-specific field names |
+| Cross-project rows in the table | — | Single-workspace process steps |
+| File placement rules (conditional on file creation) | — | Workspace-specific placement rules |
+| Folder structure | Folder structure | Removed — routing table replaces it, everywhere |
 
 ### The Reasoning Test
 
-Before adding any line to CLAUDE.md, ask: "If this line weren't here, would Claude make a worse routing decision or violate a project-wide rule?" If the answer is no — the line does not belong here, regardless of how useful or important it feels.
+Before adding any line to AGENTS.md, ask: "If this line weren't here, would Claude make a worse routing decision or violate a project-wide rule?" If the answer is no — the line does not belong here, regardless of how useful or important it feels.
 
 Length is self-regulating when this test is applied consistently. The file will be exactly as long as the project's complexity requires — no more.
 
@@ -188,51 +239,41 @@ There are two distinct types of CONTEXT.md file in this system — root and work
 
 ### Workspace CONTEXT.md
 
-This is the room description. When the routing table sends Claude to a workspace, the workspace CONTEXT.md tells it everything it needs to work accurately inside that space — what the workspace is for, what the process looks like, what files live here, what tools to use, and what constraints apply specifically here.
+The room description. When the routing table sends the agent to a folder, its CONTEXT.md says how
+to work accurately there. It loads only when a task enters the folder, so its cost is always in
+proportion to its use. (Changed 2026-11-26: the fixed Process / Inputs and Outputs / Tools /
+Constraints sections are no longer required.)
 
-It is a conditional cost. It only loads when Claude enters that workspace. A payment stage CONTEXT.md costs nothing during an onboarding session. This makes it the most token-efficient file type in the system — its cost is always proportionate to its use.
-
-In the parsing analogy: it is the schema for the variable the routing table pointed to. The routing table says "go here." The workspace CONTEXT.md says "here is what this is and how it works."
-
-**What it contains:**
-- What this workspace is for — one sentence
-- Process steps — what happens here, in order
-- Inputs and outputs — what comes in, what leaves
-- Tools — which MCPs, skills, or APIs are active here
-- Constraints — rules that apply specifically in this workspace
+**Shape:**
+- **First line:** what this folder is for, in one sentence.
+- **Then only the sections that apply.** Common ones: a task → file table for the folder's own
+  files, the process in order, what comes in and goes out, the rules that apply only here. A
+  section with nothing real to say is left out, not filled.
+- **Feature folders** (one product feature per folder, e.g. `src/features/<name>/`) use: routing
+  table, plug-in points (where the feature is wired into the host), rules, and how to switch it
+  off or remove it.
 
 **What it does not contain:**
-- Project-wide rules — those are in CLAUDE.md
-- Cross-cutting architectural decisions — those are in the root CONTEXT.md
-- Content from other workspaces — no cross-contamination
+- Rules for the whole project: `NON-NEGOTIABLES.md`
+- Status or next steps: `memory.md` (and `tasks.md` for open work)
+- A folder tree: the task table replaces it
+- Another folder's content: link to that folder's CONTEXT.md instead
 
-### Root CONTEXT.md
+### Project-root CONTEXT.md
 
-The root CONTEXT.md has no equivalent in the original MWP framework. It exists because some content is too detailed for CLAUDE.md but has no single workspace home — it is genuinely cross-cutting.
+Too detailed for `AGENTS.md`, but true across the whole project. Nothing loads it automatically:
+`AGENTS.md` routes to it, and most sessions in the project read it early, so treat it as nearly a
+fixed cost.
 
-Because it loads at session start alongside CLAUDE.md, it carries a fixed cost on every session. This makes it subject to nearly the same standard as CLAUDE.md itself. The bar for inclusion is high.
+**A line belongs here only if both are true:**
+1. **It is not routing or a project-wide rule.** Routing is `AGENTS.md`; rules are
+   `NON-NEGOTIABLES.md`.
+2. **It has no single folder home.** If it matters in one folder, it goes in that folder's
+   CONTEXT.md.
 
-**A line belongs in the root CONTEXT.md if and only if both of the following are true:**
-
-1. **It cannot live in CLAUDE.md** — it is too detailed for the map. CLAUDE.md routes and constrains. If this content neither routes nor enforces a project-wide rule, it does not belong in CLAUDE.md. But that alone is not enough.
-
-2. **It has no workspace home** — it is genuinely cross-cutting. It applies regardless of which workspace is active. If it only matters in one workspace, it belongs in that workspace's CONTEXT.md regardless of how important it feels.
-
-If both are true — the content belongs here and the file earns its fixed cost.
-If either fails — the content belongs in CLAUDE.md or in a workspace CONTEXT.md.
-
-**The root CONTEXT.md is not a dumping ground for important project information. It is a specific container for a specific type of content.** That definition is narrow by design. Every line that doesn't meet both criteria is either misplaced or redundant.
-
-**What typically belongs here:**
-- External system inventory — what platforms exist and what each owns
-- Architectural decisions that affect all workspaces
-- Non-obvious constraints that apply project-wide but are too detailed for CLAUDE.md
-
-**What does not belong here:**
-- Folder structure — routing table replaces it
-- Process flows — workspace CONTEXT.md handles these
-- Status updates — memory.md handles these
-- Anything specific to one stage or workspace
+**Typically here:** the external systems and what each owns; architecture that every folder
+depends on; for a hub, the inventory of its children (one line each). **Not here:** folder trees,
+process flows, status, history (`DEVLOG.md`), and anything already in `AGENTS.md`.
 
 ---
 
@@ -244,9 +285,9 @@ This advantage only holds if two conditions are met: the file loads only when ge
 
 ### On-Demand Loading
 
-Reference files should never load automatically. They are triggered by task type — the routing table and Token Management section in CLAUDE.md define when they are appropriate. If a reference file is being loaded on every session or every task regardless of relevance, it has effectively become a fixed cost and should be reviewed.
+Reference files should never load automatically. They are triggered by task type — the routing table and Token Management section in AGENTS.md define when they are appropriate. If a reference file is being loaded on every session or every task regardless of relevance, it has effectively become a fixed cost and should be reviewed.
 
-The Token Management section in CLAUDE.md is the primary control mechanism. Explicit instructions such as "do not load an integration's reference guides unless the task involves that integration" prevent reference files from becoming ambient context that loads by default.
+The Token Management section in AGENTS.md is the primary control mechanism. Explicit instructions such as "do not load BoldSign reference guides unless the task involves the BoldSign integration" prevent reference files from becoming ambient context that loads by default.
 
 ### Internal Structure as the Token Efficiency Mechanism
 
@@ -287,7 +328,7 @@ Memory serves one purpose: carrying state across the gap between sessions. It is
 
 ### The Fixed Cost Problem
 
-Memory loads at session start alongside CLAUDE.md. That makes it a fixed cost on every session — paid regardless of what task is ahead. This subjects it to the same standard as CLAUDE.md: every line must earn its recurring cost.
+Memory loads at session start alongside AGENTS.md. That makes it a fixed cost on every session — paid regardless of what task is ahead. This subjects it to the same standard as AGENTS.md: every line must earn its recurring cost.
 
 The test for memory content is not "is this important?" It is: **"would Claude need to re-ask or re-derive this at the start of every session if it weren't here?"** If yes — it belongs in memory. If no — it belongs in a file that loads on demand.
 
@@ -295,14 +336,17 @@ The test for memory content is not "is this important?" It is: **"would Claude n
 
 Memory carries state that is not derivable from reading the current files and not stable enough to belong in a reference file.
 
-**Belongs in memory:**
-- Current phase status and what is complete vs outstanding
-- Key decisions made that are not documented elsewhere
-- Project-specific preferences — how the user works, what to avoid, what has been confirmed
-- Pre-close checklist — session discipline that applies every session
-- Anything that would otherwise require re-explaining at the start of every session
+**Belongs in memory** (the session bridge — [session-memory.md](./session-memory.md) owns its shape and 1,000-word budget):
+- Current state — what is live, in progress, blocked
+- Next actions and who owns them
+- Open or unverified items, each with its original date
+- Links to where everything else lives
 
 **Does not belong in memory:**
+- Settled decisions and owner preferences — `decisions.md` or ADRs
+- Lessons, traps, "do not" rules — `gotchas.md` or a code comment
+- Finished work and session history — `DEVLOG.md`
+- Pre-close discipline — the `/closeout` skill, where it runs every time
 - Architectural details — reference files handle these
 - Process flows — workspace CONTEXT.md handles these
 - API documentation or integration specs — reference files

@@ -1,6 +1,6 @@
 # update-mwp — Update MWP structure files when a project changes
 
-Updates CLAUDE.md, workspace CONTEXT.md files, AGENTS.md, agent-roles.md, and memory.md to reflect changes to the project — new workspaces, renamed workspaces, changed tools, updated naming conventions. AGENTS.md is kept as a lightweight adapter to CLAUDE.md rather than duplicating routing.
+Updates AGENTS.md, NON-NEGOTIABLES.md, workspace CONTEXT.md files, agent-roles.md, and memory.md to reflect changes to the project — new workspaces, renamed workspaces, changed tools, updated naming conventions. AGENTS.md is kept as a lightweight adapter to AGENTS.md rather than duplicating routing.
 
 ---
 
@@ -26,7 +26,7 @@ Makes targeted, minimal updates to MWP files in response to a described project 
 
 ## Prerequisites
 
-- Existing MWP files (CLAUDE.md, AGENTS.md, agent-roles.md, memory.md, workspace CONTEXT.md files)
+- Existing MWP files (AGENTS.md, NON-NEGOTIABLES.md, agent-roles.md, memory.md, workspace CONTEXT.md files)
 - A clear description of what has changed — the skill asks for this before acting
 
 ---
@@ -35,16 +35,16 @@ Makes targeted, minimal updates to MWP files in response to a described project 
 
 | Change | Files updated |
 |---|---|
-| New workspace added | Create `[workspace]/CONTEXT.md`, add row to routing table in CLAUDE.md, add Token Management rule if needed |
-| Workspace renamed | Update all references in CLAUDE.md (routing table, cross-workspace flows), rename CONTEXT.md |
-| Workspace removed | Remove from CLAUDE.md routing table, remove Token Management rule |
+| New workspace added | Create `[workspace]/CONTEXT.md`, add row to routing table in AGENTS.md |
+| Workspace renamed | Update all references in AGENTS.md (task table), rename CONTEXT.md |
+| Workspace removed | Remove from AGENTS.md routing table |
 | Tool or integration changed | Update relevant workspace CONTEXT.md and Skills column in routing table |
-| Naming convention changed | Update CLAUDE.md Naming Conventions section |
-| Cross-workspace flow changed | Update CLAUDE.md Cross-Workspace Flows section |
+| Naming convention changed | Update NON-NEGOTIABLES.md Naming Conventions |
+| Cross-workspace flow changed | Update the AGENTS.md row that names the other project |
 
 memory.md is always updated at the end to reflect the current project state.
 
-`AGENTS.md` is required as the cross-model adapter, not the canonical routing file. It should point to `CLAUDE.md`. `agent-roles.md` is the MWP role registry and should only change when agent roles, boundaries, or handoffs change. Do not use lowercase `agents.md`; it collides with `AGENTS.md` on case-insensitive filesystems.
+`AGENTS.md` is the canonical Layer 0 file for every agent; there is no `CLAUDE.md`. `agent-roles.md` is the MWP role registry and should only change when agent roles, boundaries, or handoffs change. Do not use lowercase `agents.md`; it collides with `AGENTS.md` on case-insensitive filesystems.
 
 ---
 
@@ -71,7 +71,7 @@ If the change implies an underlying structural issue (e.g. a workspace that shou
 
 | Symptom | Check |
 |---|---|
-| Routing table out of sync after update | Check all workspace names in CLAUDE.md match actual folder names |
-| AGENTS.md drifted from CLAUDE.md | Replace AGENTS.md with the adapter pattern; do not maintain a second routing table |
+| Routing table out of sync after update | Check all workspace names in AGENTS.md match actual folder names |
+| A CLAUDE.md exists beside AGENTS.md | Move anything unique into AGENTS.md, then delete CLAUDE.md — it would replace AGENTS.md in Claude Code |
 | memory.md still reflects old state | Confirm the final update step ran — memory.md should always be the last file touched |
 | Spec not found | Verify `~/.claude/mwp-spec/spec/CONTEXT.md` exists — see this repo's INSTALL.md |

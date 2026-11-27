@@ -43,7 +43,7 @@ If the description is ambiguous, offer the two closest matches and ask the user 
 ## Process
 
 ### 1. Scan the project
-Read what already exists — folder structure, any CLAUDE.md, README, or context files. Do not overwrite existing MWP files without warning.
+Read what already exists — folder structure, any AGENTS.md or CLAUDE.md, README, or context files. Do not overwrite existing MWP files without warning.
 
 ### 2. Ask one question
 What is this project for? (Plain English — no need to name a type.)
